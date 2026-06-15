@@ -1,7 +1,7 @@
 // main.js — 입력 → 톤 엔진 → 정원 상태 → 화면 렌더 를 잇는다.
 
 import { loadState, applyPrompt, resetState } from "./garden.js";
-import { stageFromHealth, svgFor } from "./skins/tree.js";
+import { stageFromHealth, svgForHealth, levelInfo } from "./skins/tree.js";
 import { BADGES, badgeById } from "./badges.js";
 import { buildShareCard, shareCard } from "./share.js";
 import { WAITLIST_URL, PRO_PRICE } from "./config.js";
@@ -22,6 +22,9 @@ const el = {
   toast: document.getElementById("toast"),
   log: document.getElementById("log"),
   reset: document.getElementById("reset"),
+  stageCard: document.getElementById("stageCard"),
+  fx: document.getElementById("fx"),
+  flash: document.getElementById("flash"),
   share: document.getElementById("share"),
   proPrice: document.getElementById("proPrice"),
   waitlist: document.getElementById("waitlist"),
@@ -29,8 +32,8 @@ const el = {
   waitlistMsg: document.getElementById("waitlistMsg"),
 };
 
-// 사진(stage-N.jpg)이 있으면 보여주고, 없으면 SVG로 폴백한다.
-function renderTree(stage) {
+// 사진(stage-N.jpg)이 있으면 보여주고, 없으면 health 기반 연속 SVG로 폴백한다.
+function renderTree(stage, health) {
   const img = new Image();
   img.alt = stage.name;
   img.className = "tree-photo";
@@ -39,18 +42,19 @@ function renderTree(stage) {
     el.stage.appendChild(img);
   };
   img.onerror = () => {
-    el.stage.innerHTML = svgFor(stage.id);
+    el.stage.innerHTML = svgForHealth(health);
   };
   img.src = stage.photo + "?v=1";
 }
 
 function render() {
   const stage = stageFromHealth(state.health);
-  renderTree(stage);
+  const lv = levelInfo(state.health);
+  renderTree(stage, state.health);
   el.health.style.width = state.health + "%";
   el.health.dataset.stage = stage.id;
-  el.healthNum.textContent = Math.round(state.health);
-  el.stageName.textContent = stage.name;
+  el.healthNum.textContent = lv.level;
+  el.stageName.textContent = `Lv.${lv.level} · ${lv.name}`;
   el.caption.textContent = stage.caption;
   el.promptCount.textContent = state.prompts;
   el.streak.textContent = state.streak || 0;
@@ -105,6 +109,38 @@ function badgeToast(ids) {
   return `🎉 <b>새 뱃지!</b> <small>${names.join(" · ")}</small>`;
 }
 
+// --- 적나라한 반응 연출 --------------------------------------------------
+function spawnParticle(negative) {
+  const p = document.createElement("span");
+  p.className = "particle " + (negative ? "fall" : "rise");
+  p.style.left = Math.random() * 100 + "%";
+  const dur = 1.4 + Math.random() * 1.2;
+  p.style.animationDuration = dur + "s";
+  p.style.animationDelay = Math.random() * 0.3 + "s";
+  if (negative) {
+    p.textContent = Math.random() < 0.5 ? "🍂" : "🍁";
+    p.style.top = "8%";
+  } else {
+    p.textContent = Math.random() < 0.5 ? "🌸" : "✨";
+    p.style.bottom = "0";
+  }
+  el.fx.appendChild(p);
+  setTimeout(() => p.remove(), dur * 1000 + 500);
+}
+
+function reactEffect(delta) {
+  if (!el.fx) return;
+  const negative = delta < 0;
+  el.flash.className = "flash on " + (negative ? "bad" : "good");
+  setTimeout(() => (el.flash.className = "flash"), 600);
+  if (negative) {
+    el.stageCard.classList.add("shake");
+    setTimeout(() => el.stageCard.classList.remove("shake"), 600);
+  }
+  const n = Math.min(16, 6 + Math.abs(delta));
+  for (let i = 0; i < n; i++) spawnParticle(negative);
+}
+
 function submit() {
   const text = el.input.value.trim();
   if (!text) return;
@@ -112,6 +148,7 @@ function submit() {
   state = res.state;
   el.input.value = "";
   flash(toneToast(res.tone, res.delta));
+  reactEffect(res.delta);
   render();
   // 새 뱃지가 있으면 톤 토스트 다음에 이어서 보여준다.
   if (res.newBadges.length) {

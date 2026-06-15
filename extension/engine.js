@@ -88,6 +88,23 @@ function stageFromHealth(health) {
   return { id: 4, name: "만개한 나무", emoji: "🌸" };
 }
 
+// 레벨(1~100) + 세밀한 단계 이름 (웹앱 tree.js 와 동일 규칙)
+const LEVEL_NAMES = [
+  [0, "고사목", "🪵"], [9, "마른 가지", "🥀"], [17, "겨우 버티는 나무", "🍂"],
+  [25, "새순", "🌱"], [34, "어린 나무", "🌿"], [43, "푸른 기운", "🌿"],
+  [52, "평범한 나무", "🌳"], [61, "우거지는 나무", "🌳"], [70, "무성한 그늘", "🌳"],
+  [79, "싱그러운 나무", "🌲"], [88, "봉오리 맺힌 나무", "🌸"], [95, "만개한 나무", "🌸"],
+];
+
+function levelInfo(health) {
+  const h = Math.max(0, Math.min(100, health));
+  let name = LEVEL_NAMES[0][1], emoji = LEVEL_NAMES[0][2];
+  for (const [min, nm, em] of LEVEL_NAMES) {
+    if (h >= min) { name = nm; emoji = em; }
+  }
+  return { level: Math.round(h), name, emoji, id: stageFromHealth(h).id };
+}
+
 // state 에 톤을 적용한 새 상태와 delta 를 돌려준다(순수 함수).
 function applyTone(state, text) {
   const tone = analyzeTone(text);

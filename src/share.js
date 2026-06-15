@@ -2,7 +2,7 @@
 // 전부 클라이언트(canvas)에서 그린다. 서버/외부 전송 없음.
 // 나무 사진(stage-N.jpg)이 있으면 그걸, 없으면 SVG 나무를 래스터화해서 쓴다.
 
-import { svgFor } from "./skins/tree.js";
+import { svgFor, levelInfo } from "./skins/tree.js";
 import { PRODUCT } from "./config.js";
 
 const W = 1080;
@@ -19,11 +19,11 @@ function loadImage(src) {
 }
 
 // 나무 비주얼을 Image 로 확보한다: 사진 우선, 실패 시 SVG 폴백.
-async function treeImage(stage) {
+async function treeImage(stage, health) {
   try {
     return await loadImage(stage.photo + "?v=1");
   } catch {
-    const svg = svgFor(stage.id);
+    const svg = svgFor(health); // health 기반 연속 SVG (defs 포함 완전한 svg)
     const url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
     return loadImage(url);
   }
@@ -76,7 +76,7 @@ export async function buildShareCard({ stage, state }) {
   ctx.fillStyle = "#eef1ec";
   ctx.fill();
   ctx.clip();
-  const img = await treeImage(stage);
+  const img = await treeImage(stage, state.health);
   // object-fit: cover 계산
   const ir = img.width / img.height;
   const cr = cardW / cardH;
@@ -89,12 +89,13 @@ export async function buildShareCard({ stage, state }) {
   ctx.drawImage(img, dx, dy, dw, dh);
   ctx.restore();
 
-  // 단계 이름
+  // 레벨 + 단계 이름
+  const lv = levelInfo(state.health);
   const accent = STAGE_COLOR[stage.id] || "#3f8a35";
   ctx.textAlign = "left";
   ctx.fillStyle = "#14130f";
-  ctx.font = "800 72px -apple-system, 'Apple SD Gothic Neo', sans-serif";
-  ctx.fillText(stage.name, 80, 1010);
+  ctx.font = "800 64px -apple-system, 'Apple SD Gothic Neo', sans-serif";
+  ctx.fillText(`Lv.${lv.level} · ${lv.name}`, 80, 1010);
 
   // 생명력 바
   const barX = 80, barY = 1050, barW = W - 160, barH = 26;
