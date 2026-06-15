@@ -30,7 +30,11 @@
         </div>
         <div class="health-bar"><div id="healthFill" class="health-fill"></div></div>
         <p id="caption" class="caption"></p>
-        <p class="meta">보낸 프롬프트 <b id="promptCount">0</b>개</p>
+        <div class="meta-row">
+          <p class="meta">보낸 프롬프트 <b id="promptCount">0</b>개 · 🔥 <b id="streak">0</b>일 연속</p>
+          <button id="share" class="ghost share-btn" type="button">🌳 내 나무 공유</button>
+        </div>
+        <ul id="badges" class="badges" aria-label="획득한 뱃지"></ul>
       </section>
 
       <section class="composer">
@@ -48,6 +52,45 @@
       <section class="logwrap">
         <h2>최근 기록</h2>
         <ul id="log" class="log"></ul>
+      </section>
+
+      <section class="pricing" id="pricing">
+        <h2>요금제</h2>
+        <p class="pricing-lede">웹은 무료. <b>Pro 확장</b>은 ChatGPT·Claude에서 진짜로 보내는 프롬프트를 읽어, 코딩하는 내내 나무가 실시간으로 자랍니다.</p>
+        <div class="plans">
+          <div class="plan">
+            <div class="plan-head">
+              <span class="plan-name">무료</span>
+              <span class="plan-price">₩0</span>
+            </div>
+            <ul class="plan-feats">
+              <li>✓ 프롬프트 톤 → 나무 성장 (로컬)</li>
+              <li>✓ 스트릭 · 뱃지</li>
+              <li>✓ 내 나무 공유 카드</li>
+              <li>✓ 외부 전송 없음 (프라이버시)</li>
+            </ul>
+            <button class="ghost plan-cta" type="button" disabled>지금 사용 중</button>
+          </div>
+          <div class="plan plan--pro">
+            <div class="plan-badge">방어적 · 독창적</div>
+            <div class="plan-head">
+              <span class="plan-name">Pro 확장</span>
+              <span class="plan-price" id="proPrice">—</span>
+            </div>
+            <ul class="plan-feats">
+              <li>★ ChatGPT·Claude 입력을 <b>실시간</b>으로 읽어 자동 성장</li>
+              <li>★ 코너에 떠 있는 미니 나무 위젯</li>
+              <li>★ 추가 스킨 (식물 · 물 결정 · 펫)</li>
+              <li>★ 주간 톤 리포트</li>
+              <li class="soon">⏳ 리더보드 · 레퍼럴 (로드맵)</li>
+            </ul>
+            <form id="waitlist" class="waitlist">
+              <input id="waitlistEmail" type="email" inputmode="email" placeholder="이메일" autocomplete="email" required />
+              <button class="primary plan-cta" type="submit">웨이트리스트 등록</button>
+            </form>
+            <p id="waitlistMsg" class="waitlist-msg"></p>
+          </div>
+        </div>
       </section>
 
       <footer class="foot">

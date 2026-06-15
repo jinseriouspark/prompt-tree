@@ -2,6 +2,9 @@
 
 import { loadState, applyPrompt, resetState } from "./garden.js";
 import { stageFromHealth, svgFor } from "./skins/tree.js";
+import { BADGES, badgeById } from "./badges.js";
+import { buildShareCard, shareCard } from "./share.js";
+import { WAITLIST_URL, PRO_PRICE } from "./config.js";
 
 let state = loadState();
 
@@ -12,11 +15,18 @@ const el = {
   stageName: document.getElementById("stageName"),
   caption: document.getElementById("caption"),
   promptCount: document.getElementById("promptCount"),
+  streak: document.getElementById("streak"),
+  badges: document.getElementById("badges"),
   input: document.getElementById("prompt"),
   send: document.getElementById("send"),
   toast: document.getElementById("toast"),
   log: document.getElementById("log"),
   reset: document.getElementById("reset"),
+  share: document.getElementById("share"),
+  proPrice: document.getElementById("proPrice"),
+  waitlist: document.getElementById("waitlist"),
+  waitlistEmail: document.getElementById("waitlistEmail"),
+  waitlistMsg: document.getElementById("waitlistMsg"),
 };
 
 // 사진(stage-N.jpg)이 있으면 보여주고, 없으면 SVG로 폴백한다.
@@ -43,7 +53,19 @@ function render() {
   el.stageName.textContent = stage.name;
   el.caption.textContent = stage.caption;
   el.promptCount.textContent = state.prompts;
+  el.streak.textContent = state.streak || 0;
+  renderBadges();
   renderLog();
+}
+
+function renderBadges() {
+  const have = new Set(state.badges || []);
+  el.badges.innerHTML = BADGES.map((b) => {
+    const owned = have.has(b.id);
+    return `<li class="badge ${owned ? "on" : "off"}" title="${b.name} — ${b.desc}">
+      <span class="badge-emoji">${b.emoji}</span>
+    </li>`;
+  }).join("");
 }
 
 function renderLog() {
@@ -62,13 +84,25 @@ function renderLog() {
 }
 
 let toastTimer = null;
-function flash(tone, delta) {
-  const sign = delta >= 0 ? "+" : "";
-  el.toast.innerHTML = `${tone.emoji} <b>${tone.label}</b> · 생명력 ${sign}${delta}
-    <small>${tone.reasons.join(" · ")}</small>`;
+function flash(html) {
+  el.toast.innerHTML = html;
   el.toast.classList.add("show");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.toast.classList.remove("show"), 2600);
+  toastTimer = setTimeout(() => el.toast.classList.remove("show"), 2800);
+}
+
+function toneToast(tone, delta) {
+  const sign = delta >= 0 ? "+" : "";
+  return `${tone.emoji} <b>${tone.label}</b> · 생명력 ${sign}${delta}
+    <small>${tone.reasons.join(" · ")}</small>`;
+}
+
+function badgeToast(ids) {
+  const names = ids.map((id) => {
+    const b = badgeById(id);
+    return `${b.emoji} ${b.name}`;
+  });
+  return `🎉 <b>새 뱃지!</b> <small>${names.join(" · ")}</small>`;
 }
 
 function submit() {
@@ -77,8 +111,12 @@ function submit() {
   const res = applyPrompt(state, text);
   state = res.state;
   el.input.value = "";
-  flash(res.tone, res.delta);
+  flash(toneToast(res.tone, res.delta));
   render();
+  // 새 뱃지가 있으면 톤 토스트 다음에 이어서 보여준다.
+  if (res.newBadges.length) {
+    setTimeout(() => flash(badgeToast(res.newBadges)), 2900);
+  }
 }
 
 el.send.addEventListener("click", submit);
@@ -94,6 +132,53 @@ el.reset.addEventListener("click", () => {
     state = resetState();
     render();
   }
+});
+
+// --- 공유 카드 ------------------------------------------------------------
+el.share.addEventListener("click", async () => {
+  el.share.disabled = true;
+  const prev = el.share.textContent;
+  el.share.textContent = "🌳 만드는 중…";
+  try {
+    const stage = stageFromHealth(state.health);
+    const blob = await buildShareCard({ stage, state });
+    const how = await shareCard(blob, { stage, state });
+    if (how === "downloaded") flash("🌳 <b>이미지 저장됨</b> <small>SNS에 자랑해보세요</small>");
+  } catch (err) {
+    flash("⚠️ <b>공유 실패</b> <small>다시 시도해주세요</small>");
+  } finally {
+    el.share.disabled = false;
+    el.share.textContent = prev;
+  }
+});
+
+// --- Pro 웨이트리스트 -----------------------------------------------------
+const WAITLIST_KEY = "prompt-tree:waitlist";
+
+el.proPrice.textContent = PRO_PRICE;
+
+el.waitlist.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const email = el.waitlistEmail.value.trim();
+  if (!email) return;
+
+  // 외부 폼 URL 이 설정돼 있으면 그쪽으로 보낸다(이메일을 쿼리로 프리필).
+  if (WAITLIST_URL) {
+    const sep = WAITLIST_URL.includes("?") ? "&" : "?";
+    window.open(`${WAITLIST_URL}${sep}email=${encodeURIComponent(email)}`, "_blank");
+  }
+
+  // 외부 전송이 없어도(기본값) 로컬에 모아두고 감사 메시지를 띄운다.
+  try {
+    const list = JSON.parse(localStorage.getItem(WAITLIST_KEY) || "[]");
+    if (!list.includes(email)) list.push(email);
+    localStorage.setItem(WAITLIST_KEY, JSON.stringify(list));
+  } catch {
+    /* 저장 불가 시 무시 */
+  }
+
+  el.waitlist.reset();
+  el.waitlistMsg.textContent = "🌿 등록 완료! 출시되면 가장 먼저 알려드릴게요.";
 });
 
 render();

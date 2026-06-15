@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "프롬프트 나무 Pro",
+  "version": "0.1.0",
+  "description": "ChatGPT·Claude에 보내는 프롬프트의 말투를 읽어, 코딩하는 내내 나무가 실시간으로 자랍니다. 입력은 기기 안에서만 분석됩니다.",
+  "permissions": ["storage"],
+  "action": {
+    "default_title": "프롬프트 나무",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://claude.ai/*"
+      ],
+      "js": ["engine.js", "content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
