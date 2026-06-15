@@ -148,12 +148,12 @@
   let toastTimer;
   function update(tone, delta) {
     if (!ui) return;
-    const stage = stageFromHealth(state.health);
-    ui.name.textContent = stage.name;
-    ui.emoji.textContent = stage.emoji;
-    ui.h.textContent = Math.round(state.health);
+    const lv = levelInfo(state.health);
+    ui.name.textContent = `Lv.${lv.level} · ${lv.name}`;
+    ui.emoji.textContent = lv.emoji;
+    ui.h.textContent = lv.level;
     ui.fill.style.width = state.health + "%";
-    ui.fill.style.background = STAGE_COLOR[stage.id];
+    ui.fill.style.background = STAGE_COLOR[lv.id];
     ui.p.textContent = state.prompts;
     ui.s.textContent = state.streak || 0;
     if (tone) {
