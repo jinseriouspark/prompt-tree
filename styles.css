@@ -38,6 +38,25 @@ body {
   font-size: 14px;
 }
 .head em { font-style: normal; color: var(--ink); font-weight: 700; }
+.head-sub { margin: 6px 0 0; font-size: 13px; color: var(--muted); }
+.head-sub b { color: var(--ink); }
+
+/* 예시 칩 (눌러서 바로 체험) */
+.examples { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; }
+.examples-label { font-size: 12px; color: var(--muted); margin-right: 2px; }
+.chip {
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  padding: 6px 11px;
+  font-size: 13px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.chip:hover { transform: translateY(-1px); }
+.chip--kind:hover { border-color: #8fbf72; background: #f3faef; }
+.chip--rude:hover { border-color: #d9a08f; background: #fdf3f0; }
 
 /* 무대 */
 .stage-card {

@@ -14,8 +14,9 @@
     <main class="wrap">
       <header class="head">
         <h1>프롬프트 <b>나무</b></h1>
-        <p>AI에게 던지는 말의 <em>뉘앙스</em>에 따라 나무가 자랍니다.
-          다정하면 무성하게, 거칠면 시들게.</p>
+        <p>당신이 AI에게 한 말이, 나무가 되어 자랍니다.
+          <em>다정하면 만개하고, 거칠면 고사합니다.</em></p>
+        <p class="head-sub">차단하지 않습니다. 당신의 말투를 <b>그대로 비추는 거울</b>입니다.</p>
       </header>
 
       <section class="stage-card" id="stageCard">
@@ -45,6 +46,14 @@
           rows="3"
           placeholder="AI에게 보낼 프롬프트를 입력하세요.  예) '이 함수 리팩터링 좀 도와줄래? 고마워'"
         ></textarea>
+        <div class="examples" id="examples">
+          <span class="examples-label">눌러서 바로 체험 →</span>
+          <button class="chip chip--kind" type="button" data-text="이 함수 같이 리팩터링 해볼까? 고마워 :)">🌸 다정하게</button>
+          <button class="chip chip--kind" type="button" data-text="천천히 해도 괜찮아요. 도와주셔서 감사합니다.">🌿 정중하게</button>
+          <button class="chip" type="button" data-text="버그 좀 고쳐줘">🍃 담담하게</button>
+          <button class="chip chip--rude" type="button" data-text="왜 또 틀렸어 짜증나 빨리 제대로 해">🥀 짜증내며</button>
+          <button class="chip chip--rude" type="button" data-text="이것도 못해? 진짜 쓸모없네 당장 다시 해!!">🔥 거칠게</button>
+        </div>
         <div class="composer-row">
           <button id="reset" class="ghost" type="button">정원 초기화</button>
           <button id="send" class="primary" type="button">보내기 ↵</button>

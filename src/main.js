@@ -25,6 +25,7 @@ const el = {
   stageCard: document.getElementById("stageCard"),
   fx: document.getElementById("fx"),
   flash: document.getElementById("flash"),
+  examples: document.getElementById("examples"),
   share: document.getElementById("share"),
   proPrice: document.getElementById("proPrice"),
   waitlist: document.getElementById("waitlist"),
@@ -87,12 +88,25 @@ function renderLog() {
     .join("");
 }
 
+// 토스트 큐 — 톤/레벨/뱃지 메시지가 겹치지 않게 차례로 보여준다.
 let toastTimer = null;
-function flash(html) {
-  el.toast.innerHTML = html;
+let toastQueue = [];
+let toastBusy = false;
+function pumpToast() {
+  if (toastBusy || !toastQueue.length) return;
+  toastBusy = true;
+  el.toast.innerHTML = toastQueue.shift();
   el.toast.classList.add("show");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.toast.classList.remove("show"), 2800);
+  toastTimer = setTimeout(() => {
+    el.toast.classList.remove("show");
+    toastBusy = false;
+    setTimeout(pumpToast, 260);
+  }, 2400);
+}
+function flash(html) {
+  toastQueue.push(html);
+  pumpToast();
 }
 
 function toneToast(tone, delta) {
@@ -144,16 +158,26 @@ function reactEffect(delta) {
 function submit() {
   const text = el.input.value.trim();
   if (!text) return;
+  const prevTier = levelInfo(state.health).name;
   const res = applyPrompt(state, text);
   state = res.state;
   el.input.value = "";
+
   flash(toneToast(res.tone, res.delta));
   reactEffect(res.delta);
   render();
-  // 새 뱃지가 있으면 톤 토스트 다음에 이어서 보여준다.
-  if (res.newBadges.length) {
-    setTimeout(() => flash(badgeToast(res.newBadges)), 2900);
+
+  // 단계 이름이 바뀌면 레벨업/하락 연출
+  const lv = levelInfo(state.health);
+  if (lv.name !== prevTier) {
+    const up = res.delta >= 0;
+    flash(
+      `${up ? "⬆️ <b>레벨 업!</b>" : "⬇️ <b>레벨 하락…</b>"}
+       <small>${lv.emoji} Lv.${lv.level} · ${lv.name}</small>`
+    );
   }
+  // 새 뱃지
+  if (res.newBadges.length) flash(badgeToast(res.newBadges));
 }
 
 el.send.addEventListener("click", submit);
@@ -169,6 +193,14 @@ el.reset.addEventListener("click", () => {
     state = resetState();
     render();
   }
+});
+
+// 예시 칩: 눌러서 바로 보내기 (첫 사용자 체험)
+el.examples.addEventListener("click", (e) => {
+  const btn = e.target.closest(".chip");
+  if (!btn) return;
+  el.input.value = btn.dataset.text;
+  submit();
 });
 
 // --- 공유 카드 ------------------------------------------------------------
