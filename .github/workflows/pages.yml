@@ -6,7 +6,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, claude/lucid-meitner-gnll5u]
   workflow_dispatch:
 
 permissions:

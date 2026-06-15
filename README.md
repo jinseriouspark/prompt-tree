@@ -27,6 +27,11 @@ python3 -m http.server 5173   # 또는 아무 정적 서버
 ```
 > `file://` 로 직접 열면 ES 모듈이 막히므로 반드시 정적 서버로 열 것.
 
+## 배포 (GitHub Pages)
+`.github/workflows/pages.yml` 가 푸시 시 정적 사이트를 Pages 로 배포한다.
+**최초 1회만 수동**: 저장소 **Settings → Pages → Source = "GitHub Actions"** 로 변경.
+그 뒤로는 푸시하면 자동 배포된다(현재 작업 브랜치 + `main` 에서 트리거).
+
 ## 구조
 ```
 prompt-tree/
