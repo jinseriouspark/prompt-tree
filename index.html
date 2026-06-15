@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>프롬프트 나무 — 당신의 말이 자란다</title>
+    <meta
+      name="description"
+      content="AI에게 보내는 프롬프트의 말투에 따라 나무가 자라거나 시드는 실험. 물은 답을 알고 있다."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="head">
+        <h1>프롬프트 <b>나무</b></h1>
+        <p>AI에게 던지는 말의 <em>뉘앙스</em>에 따라 나무가 자랍니다.
+          다정하면 무성하게, 거칠면 시들게.</p>
+      </header>
+
+      <section class="stage-card">
+        <div id="stage" class="stage" aria-live="polite"></div>
+        <div id="toast" class="toast"></div>
+      </section>
+
+      <section class="status">
+        <div class="status-top">
+          <span id="stageName" class="stage-name">평범한 나무</span>
+          <span class="health-num"><b id="healthNum">50</b> / 100</span>
+        </div>
+        <div class="health-bar"><div id="healthFill" class="health-fill"></div></div>
+        <p id="caption" class="caption"></p>
+        <p class="meta">보낸 프롬프트 <b id="promptCount">0</b>개</p>
+      </section>
+
+      <section class="composer">
+        <textarea
+          id="prompt"
+          rows="3"
+          placeholder="AI에게 보낼 프롬프트를 입력하세요.  예) '이 함수 리팩터링 좀 도와줄래? 고마워'"
+        ></textarea>
+        <div class="composer-row">
+          <button id="reset" class="ghost" type="button">정원 초기화</button>
+          <button id="send" class="primary" type="button">보내기 ↵</button>
+        </div>
+      </section>
+
+      <section class="logwrap">
+        <h2>최근 기록</h2>
+        <ul id="log" class="log"></ul>
+      </section>
+
+      <footer class="foot">
+        <p>로컬에서만 동작 · 입력은 브라우저(localStorage)에만 저장되고 외부로 전송되지 않습니다.</p>
+      </footer>
+    </main>
+
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>
