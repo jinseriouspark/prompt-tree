@@ -301,6 +301,13 @@ el.waitlist.addEventListener("submit", (e) => {
 
 render();
 
+// --- PWA: 서비스워커 등록 (오프라인/설치) --------------------------------
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => { /* 무시 */ });
+  });
+}
+
 // --- 첫 방문 온보딩 ------------------------------------------------------
 const ONBOARD_KEY = "prompt-tree:onboarded";
 const onboard = document.getElementById("onboard");

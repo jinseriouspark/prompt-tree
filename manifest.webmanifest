@@ -1,0 +1,13 @@
+{
+  "name": "프롬프트 나무",
+  "short_name": "프롬프트나무",
+  "description": "당신이 AI에게 한 말이 나무가 되어 자랍니다.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf8f3",
+  "theme_color": "#3f8a35",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
