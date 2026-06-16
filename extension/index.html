@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>나무 문지기 확장 설치 🌲</title>
+    <meta name="description" content="나무 문지기 브라우저 확장 설치 안내 — Chrome / Firefox." />
+    <style>
+      :root{ --ink:#16201a; --soft:#5b6b56; --line:#dfe7d8; --bg:#f3f7ef; --card:#fff; --green:#3f8a35; --green-d:#2f6b34; }
+      *{ box-sizing:border-box; }
+      body{ margin:0; color:var(--ink); background:var(--bg); font:16px/1.65 -apple-system,"Apple SD Gothic Neo","Segoe UI",sans-serif; }
+      a{ color:var(--green-d); }
+      .wrap{ max-width:820px; margin:0 auto; padding:0 20px; }
+      header.nav{ border-bottom:1px solid var(--line); background:#f3f7efe6; position:sticky; top:0; }
+      .nav .wrap{ display:flex; align-items:center; gap:18px; height:58px; }
+      .brand{ font-weight:800; font-size:17px; text-decoration:none; color:var(--ink); }
+      .nav nav{ margin-left:auto; display:flex; gap:18px; font-size:14px; }
+      .nav nav a{ color:var(--soft); text-decoration:none; }
+      .hero{ text-align:center; padding:46px 0 24px; }
+      .hero h1{ font-size:32px; margin:0 0 10px; }
+      .hero p{ color:var(--soft); max-width:520px; margin:0 auto 22px; }
+      .stores{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+      .btn{ display:inline-block; text-decoration:none; font-weight:700; padding:12px 20px; border-radius:999px; }
+      .btn.primary{ background:var(--green); color:#fff; }
+      .btn.ghost{ background:#fff; color:var(--ink); border:1px solid var(--line); }
+      section{ padding:28px 0; }
+      h2{ font-size:21px; margin:0 0 10px; }
+      .card{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px; }
+      ol{ padding-left:20px; margin:0; } li{ margin:8px 0; }
+      code{ background:#e9efe2; padding:1px 6px; border-radius:6px; font-size:13px; }
+      .feat{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+      @media(max-width:600px){ .feat{ grid-template-columns:1fr; } }
+      .feat .card b{ display:block; margin-bottom:4px; }
+      .feat .card span{ color:var(--soft); font-size:14px; }
+      .note{ color:var(--soft); font-size:13px; }
+      footer{ border-top:1px solid var(--line); padding:24px 0 48px; color:var(--soft); font-size:14px; text-align:center; }
+    </style>
+  </head>
+  <body>
+    <header class="nav">
+      <div class="wrap">
+        <a class="brand" href="../">🌲 나무 문지기</a>
+        <nav>
+          <a href="../#how">작동방식</a>
+          <a href="./">설치</a>
+          <a href="../blog/">블로그</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section class="hero">
+        <h1>나무 문지기 확장 설치</h1>
+        <p>정한 시간을 넘기면 화면을 자라는 나무로 덮어 쉬게 합니다. 바이브코딩(AI)·SNS 두 모드.</p>
+        <div class="stores">
+          <a class="btn primary" href="https://github.com/jinseriouspark/prompt-tree" target="_blank" rel="noopener">GitHub에서 받기</a>
+          <a class="btn ghost" href="../">홈으로</a>
+        </div>
+        <p class="note" style="margin-top:14px">아직 스토어 미등록 — 개발자 모드로 직접 로드해요(아래 1분 가이드).</p>
+      </section>
+
+      <section>
+        <h2>크롬 / 엣지 설치</h2>
+        <div class="card">
+          <ol>
+            <li>저장소를 받는다: <code>git clone</code> 또는
+              <a href="https://github.com/jinseriouspark/prompt-tree/archive/refs/heads/main.zip">ZIP 다운로드</a> 후 압축 해제</li>
+            <li>주소창에 <code>chrome://extensions</code> → 우측 상단 <b>개발자 모드</b> 켜기</li>
+            <li><b>압축해제된 확장 프로그램을 로드</b> → 받은 폴더 안의 <code>extension/</code> 선택</li>
+            <li>툴바 🌲 아이콘 → <b>바이브코딩 / SNS</b>와 사용 한도·휴식 시간 설정 후 <b>저장</b></li>
+            <li>설정을 바꾼 뒤엔 해당 사이트 탭을 새로고침하면 즉시 반영</li>
+          </ol>
+        </div>
+      </section>
+
+      <section>
+        <h2>파이어폭스 설치</h2>
+        <div class="card">
+          <ol>
+            <li>주소창에 <code>about:debugging</code> → <b>이 Firefox</b></li>
+            <li><b>임시 부가 기능 로드</b> → <code>extension/manifest.json</code> 선택</li>
+          </ol>
+          <p class="note">임시 로드는 브라우저를 닫으면 사라져요(테스트용). 영구 설치는 서명 필요.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>무엇을 지키나</h2>
+        <div class="feat">
+          <div class="card"><b>💻 바이브코딩(AI)</b><span>ChatGPT · Claude · Gemini · Perplexity</span></div>
+          <div class="card"><b>📱 SNS</b><span>YouTube · X · Instagram · TikTok · Reddit</span></div>
+          <div class="card"><b>🌲 자라는 나무</b><span>휴식 동안 묘목이 노송까지 자라고, 끝나면 화면이 열려요.</span></div>
+          <div class="card"><b>🔒 로컬 전용</b><span>사용 기록·설정은 이 브라우저 안에만. 외부 전송 0.</span></div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      🌲 나무 문지기 · <a href="../">홈</a> · <a href="../blog/">블로그</a> ·
+      <a href="https://github.com/jinseriouspark/prompt-tree" target="_blank" rel="noopener">GitHub</a>
+    </footer>
+  </body>
+</html>

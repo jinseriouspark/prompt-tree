@@ -118,12 +118,32 @@
     </defs>`;
   }
 
-  // 전역 노출: 휴식 진행도(0~100)를 받아 소나무 장면 SVG 한 장을 돌려준다.
+  // 전역 노출.
   global.TreeArt = {
+    // 휴식 진행도(0~100) → 소나무 장면 SVG 한 장.
     sceneSVG(health) {
       return `<svg viewBox="0 0 400 360" xmlns="http://www.w3.org/2000/svg"
                 width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
         ${defs()}${svgForHealth(Math.max(0, Math.min(100, health)))}</svg>`;
+    },
+    // 생명력 → 5단계 사진 인덱스(stage-N.jpg).
+    stageIndex(health) {
+      const h = Math.max(0, Math.min(100, health));
+      return h <= 15 ? 0 : h <= 38 ? 1 : h <= 61 ? 2 : h <= 84 ? 3 : 4;
+    },
+    // 컨테이너에 SVG 를 즉시 그리고, photoBase/stage-N.jpg 사진이 있으면 그걸로 자동 업그레이드.
+    // photoBase 미지정 시 SVG 만. (예: "assets/tree" 또는 chrome.runtime.getURL("assets/tree"))
+    paint(el, health, photoBase) {
+      if (!el) return;
+      el.innerHTML = this.sceneSVG(health);
+      if (!photoBase) return;
+      const url = `${photoBase}/stage-${this.stageIndex(health)}.jpg`;
+      const img = new Image();
+      img.onload = () => {
+        el.innerHTML =
+          `<img src="${url}" alt="" style="width:100%;height:100%;object-fit:cover;display:block"/>`;
+      };
+      img.src = url; // 없으면 onerror 로 무시 → SVG 유지
     },
   };
 })(window);

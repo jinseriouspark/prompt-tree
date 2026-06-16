@@ -191,8 +191,8 @@
     </script>
     <script src="tree-art.js"></script>
     <script>
-      // 히어로 나무
-      document.getElementById("heroScene").innerHTML = TreeArt.sceneSVG(72);
+      // 히어로 나무 (assets/tree/stage-N.jpg 있으면 사진, 없으면 SVG)
+      TreeArt.paint(document.getElementById("heroScene"), 80, "assets/tree");
 
       // 모드 선택 토글
       const modes = { ai: true, sns: true };
@@ -220,12 +220,15 @@
         const label = picked.length ? picked.join(" · ") : "선택한 사이트";
         const usage = document.getElementById("usage").value || 20;
         dsub.textContent = `${label}에서 ${usage}분을 채운 상황이에요. 20초만 쉬면서 나무가 자라는 걸 지켜봐요.`;
-        const total = 20; let left = total;
+        const total = 20; let left = total; let lastStage = -1;
         demo.classList.add("show");
         document.body.style.overflow = "hidden";
         const render = () => {
           const prog = (total - left) / total;
-          dscene.innerHTML = TreeArt.sceneSVG(prog * 100);
+          const health = prog * 100;
+          // 사진이 있으면 단계가 바뀔 때만 사진 교체(깜빡임 방지), 없으면 SVG.
+          const stage = TreeArt.stageIndex(health);
+          if (stage !== lastStage) { TreeArt.paint(dscene, health, "assets/tree"); lastStage = stage; }
           dcount.textContent = fmt(left);
           dfill.style.width = (prog * 100).toFixed(1) + "%";
         };

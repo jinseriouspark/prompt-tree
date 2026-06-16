@@ -41,6 +41,9 @@
   let overlayEl = null;
   let tickTimer = null;
   let saveAcc = 0;
+  let lastStage = -1;
+  // 번들된 사진(assets/tree/stage-N.jpg)이 있으면 자동 사용, 없으면 SVG 폴백.
+  const PHOTO_BASE = (() => { try { return chrome.runtime.getURL("assets/tree"); } catch { return null; } })();
 
   async function loadAll() {
     const o = await get([CFG_KEY, stateKey(HOST)]);
@@ -112,7 +115,8 @@
     const total = cfg.breakMin * 60;
     const left = Math.max(0, Math.ceil((st.breakUntil - Date.now()) / 1000));
     const progress = Math.max(0, Math.min(1, (total - left) / total)); // 0→1 동안 나무가 자람
-    refs.scene.innerHTML = TreeArt.sceneSVG(progress * 100);
+    const stage = TreeArt.stageIndex(progress * 100);
+    if (stage !== lastStage) { TreeArt.paint(refs.scene, progress * 100, PHOTO_BASE); lastStage = stage; }
     refs.count.textContent = fmt(left);
     refs.fill.style.width = (progress * 100).toFixed(1) + "%";
     refs.sub.textContent = `${HOST} 에서 ${cfg.usageLimitMin}분을 채웠어요. 나무가 다 자랄 때까지 ${cfg.breakMin}분만 쉬어요.`;
@@ -128,6 +132,7 @@
     if (overlayEl) return;
     const refs = buildOverlay();
     overlayEl = refs.host;
+    lastStage = -1;
     renderBreak(refs);
     const iv = setInterval(() => {
       const left = renderBreak(refs);
