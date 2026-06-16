@@ -7,7 +7,7 @@
     <meta name="description" content="정한 시간을 넘기면 화면을 나무로 덮어 쉬게 하는 스크린타임 문지기. 바이브코딩과 SNS를 따로 지킵니다." />
     <meta property="og:title" content="나무 문지기" />
     <style>
-      :root{ --ink:#191813; --soft:#6b675c; --line:#d9d4c6; --paper:#f4f1e9; --paper2:#efebe0; --accent:#2f5d3a; }
+      :root{ --ink:#1c1b15; --soft:#6f6a5d; --line:#ddd6c5; --paper:#f6f2e8; --paper2:#efe9da; --accent:#1f6b43; --accent-d:#16502f; }
       *{ box-sizing:border-box; }
       html{ -webkit-font-smoothing:antialiased; }
       body{ margin:0; color:var(--ink); background:var(--paper);
@@ -26,17 +26,17 @@
       .langs button{ background:none; border:none; font:inherit; font-size:13px; color:var(--soft); cursor:pointer; padding:0; }
       .langs button.on{ color:var(--ink); text-decoration:underline; text-underline-offset:3px; }
 
-      .hero{ padding:64px 0 40px; border-bottom:1px solid var(--line); }
-      .kicker{ font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--soft); margin:0 0 18px; }
-      .hero h1{ font-size:46px; line-height:1.15; margin:0 0 20px; font-weight:400; letter-spacing:-.01em; }
-      .hero p.sub{ font-size:18px; color:var(--soft); margin:0 0 28px; max-width:48ch; }
-      .actions{ display:flex; align-items:center; gap:22px; }
-      .link-btn{ background:var(--accent); color:#fff; padding:12px 20px; font-size:15px; border:none; cursor:pointer; font:inherit; }
-      .link-btn:hover{ background:#264b30; }
+      .hero{ border-bottom:1px solid var(--line); }
+      .banner{ width:100%; height:min(58vh,480px); overflow:hidden; background:#cdd8c6; border-bottom:1px solid var(--line); }
+      .banner img, .banner svg{ width:100%; height:100%; object-fit:cover; display:block; }
+      .hcontent{ padding:48px 0 52px; }
+      .kicker{ font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin:0 0 18px; }
+      .hero h1{ font-size:48px; line-height:1.14; margin:0 0 20px; font-weight:400; letter-spacing:-.01em; }
+      .hero p.sub{ font-size:18px; color:var(--soft); margin:0 0 30px; max-width:50ch; }
+      .actions{ display:flex; align-items:center; gap:24px; }
+      .link-btn{ background:var(--accent); color:#fff; padding:13px 24px; font-size:15px; border:none; cursor:pointer; font:inherit; border-radius:999px; }
+      .link-btn:hover{ background:var(--accent-d); }
       .text-link{ color:var(--ink); font-size:15px; }
-      figure{ margin:34px 0 0; }
-      .scene{ width:100%; max-width:520px; aspect-ratio:400/300; overflow:hidden; border:1px solid var(--line); background:#cdd8c6; }
-      figcaption{ font-size:13px; color:var(--soft); margin-top:8px; }
 
       section{ padding:46px 0; border-bottom:1px solid var(--line); }
       h2.serif{ font-size:15px; letter-spacing:.04em; margin:0 0 22px; font-weight:700; }
@@ -96,18 +96,17 @@
 
     <main>
       <div class="hero">
-        <div class="wrap">
-          <p class="kicker" data-i18n="kicker">Screen-time gatekeeper</p>
-          <h1 class="serif" data-i18n-html="h1">시간을 넘기면,<br />나무가 화면을 덮어 쉬게 합니다.</h1>
-          <p class="sub" data-i18n="heroSub">정한 시간을 넘기면 화면이 한 그루 나무로 잠깁니다. 쉬는 동안 묘목이 노송으로 자라고, 다 자라면 화면이 다시 열립니다.</p>
-          <div class="actions">
-            <button class="link-btn" id="tryBtn" data-i18n="try">차단 화면 체험</button>
-            <a class="text-link" href="#install" data-i18n="installCta">확장 설치하기</a>
+        <div class="banner" id="heroScene"></div>
+        <div class="hcontent">
+          <div class="wrap">
+            <p class="kicker" data-i18n="kicker">Screen-time gatekeeper</p>
+            <h1 class="serif" data-i18n-html="h1">시간을 넘기면,<br />나무가 화면을 덮어 쉬게 합니다.</h1>
+            <p class="sub" data-i18n="heroSub">정한 시간을 넘기면 화면이 한 그루 나무로 잠깁니다. 쉬는 동안 묘목이 노송으로 자라고, 다 자라면 화면이 다시 열립니다.</p>
+            <div class="actions">
+              <button class="link-btn" id="tryBtn" data-i18n="try">차단 화면 체험</button>
+              <a class="text-link" href="#install" data-i18n="installCta">확장 설치하기</a>
+            </div>
           </div>
-          <figure>
-            <div class="scene" id="heroScene"></div>
-            <figcaption data-i18n="figcap">휴식이 끝날 때의 노송. (사진을 넣으면 실사로 바뀝니다)</figcaption>
-          </figure>
         </div>
       </div>
 
