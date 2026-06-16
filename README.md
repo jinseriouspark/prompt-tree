@@ -1,88 +1,73 @@
-# 프롬프트 나무 (Prompt Tree)
+# 프롬프트트리 (Prompt Tree)
 
-> AI에게 던지는 프롬프트의 **말투(뉘앙스)** 에 따라 나무가 자라거나 시드는 실험.
-> 다정하면 무성하게, 거칠면 시들게. — 「물은 답을 알고 있다」에서 따온 모티프.
+> 정한 시간을 넘기면 화면을 **자라는 나무**로 덮어 쉬게 하는 스크린타임 도구.
+> [Cat Gatekeeper](https://zokuzoku.github.io/cat-gatekeeper/) 스타일을, 고양이 대신 **나무**로.
 
-바이브 코더를 위한 토이. **내가 AI에게 한 말을 그대로 비추는 거울**이다.
-막 던진 프롬프트일수록 결과가 나쁜 게 현실이라, *예쁜 나무 = 좋은 프롬프트 습관* 이 된다.
+쉬는 동안 묘목이 노송(老松)으로 자라고, 다 자라면 화면이 다시 열린다.
+**바이브코딩(AI)** 과 **소셜 미디어** 를 따로 지킬 수 있고, 모든 기록은 기기 안에만 저장된다.
 
-## 어떻게 동작하나
-1. 프롬프트를 입력하고 보낸다.
-2. `toneEngine.js` 가 로컬 사전으로 말투를 -1(거침)~+1(다정함)로 환산한다. (외부 전송 없음)
-3. `garden.js` 가 생명력(health 0~100)에 반영한다. 어떤 프롬프트든 조금은 자라지만, 톤이 방향을 정한다.
-4. `skins/tree.js` 가 생명력을 5단계 나무로 표현한다: 고사목 → 시듦 → 평범 → 건강 → 만개.
+- 웹: https://jinseriouspark.github.io/prompt-tree/
+- 확장 설치 안내: https://jinseriouspark.github.io/prompt-tree/extension/
 
-상태는 브라우저 `localStorage` 에만 저장된다.
+## 구성
+- **웹 (루트)** — 소개 + **차단 화면 체험** + **나무 도감(서식지별 26종)**, 한·영·중 지원
+- **확장 (`extension/`)** — 실제 스크린타임 게이트키퍼 (크롬·파이어폭스)
+- **블로그 (`/blog/`)** — 정적 마크다운 블로그
+- **프롬프트나무 (`/tree/`)** — 초기 "말투 거울" 토이 (별도 보존)
 
-## 실행
-빌드 불필요. 정적 파일이라 그냥 열면 된다.
-```bash
-cd prompt-tree
-python3 -m http.server 5173   # 또는 아무 정적 서버
-# http://localhost:5173 접속
-```
-> `file://` 로 직접 열면 ES 모듈이 막히므로 반드시 정적 서버로 열 것.
+## 확장은 이렇게 동작한다
+1. 감시할 사이트를 보고 있는 동안만 사용 시간을 누적한다(탭이 보이고 포커스 있을 때만).
+2. **사용 한도**(기본 20분)에 닿으면 화면 전체를 나무 오버레이로 덮는다.
+3. **휴식 시간**(기본 5분) 동안 닫을 수 없고, 그사이 묘목이 노송까지 자란다.
+4. 휴식이 끝나면 오버레이가 사라지고 사용 누적이 초기화된다.
 
-## 배포 (GitHub Pages)
-`main` 브랜치에 푸시하면 GitHub Pages 가 자동 배포한다.
-- 블로그: https://jinseriouspark.github.io/prompt-tree/
-- 나무앱: https://jinseriouspark.github.io/prompt-tree/tree/
+감시 대상 두 카테고리(팝업에서 선택):
+- **바이브코딩(AI)**: ChatGPT · Claude · Gemini · Perplexity
+- **소셜 미디어**: YouTube · X · Instagram · TikTok · Reddit
+
+> 사용 시간·설정은 `chrome.storage.local` 에만 저장된다. 외부 전송 없음, 네트워크 권한 없음.
+
+## 확장 설치 (개발자 모드, 빌드 불필요)
+1. 크롬 주소창에 `chrome://extensions` → **개발자 모드** 켜기
+2. **압축해제된 확장 프로그램을 로드** → 이 저장소의 `extension/` 폴더 선택
+3. 툴바 아이콘에서 모드·사용 한도·휴식 시간을 정하고 저장
+   - 자세한 건 [`extension/README.md`](extension/README.md)
+
+파이어폭스: `about:debugging` → 이 Firefox → 임시 부가 기능 로드 → `extension/manifest.json`.
+
+## 나무 이미지 (사진 우선, SVG 폴백)
+오버레이의 나무는 **성장 5단계 사진**(`assets/tree/stage-0.jpg` ~ `stage-4.jpg`)을 쓰고,
+사진이 없으면 `tree-art.js` 의 SVG 소나무로 폴백한다.
+
+- 도감 수종: `assets/trees/<slug>.jpg` + `assets/trees/index.json`(서식지 분류)
+- 생성 스크립트(`scripts/`, Gemini 이미지 모델 사용):
+  - `gen-tree-images.mjs` — 성장 5단계(참조-체이닝)
+  - `gen-tree-gallery.mjs` — 도감 수종(서식지별)
+  - `gen-strip.mjs` — 한 장에 같은 나무 5단계 필름스트립
+  - `gen-imagen.mjs` — Imagen 4로 한 요청 다중 생성
+  - 실행: `GEMINI_API_KEY=<키> node scripts/<파일>` (키는 커밋 금지)
 
 ## 구조
 ```
 prompt-tree/
-├── index.html · post.html · app.js · blog.css   # 블로그 (루트)
-├── posts/                # 블로그 글 (마크다운) — 자세한 건 BLOG.md
-├── tree/                 # 나무앱
-│   ├── index.html · styles.css · sw.js
-│   ├── src/
-│   │   ├── toneEngine.js # 말투 → 점수 (로컬, 무료)
-│   │   ├── garden.js     # 생명력 상태 + 저장
-│   │   ├── main.js       # 입력 ↔ 엔진 ↔ 화면
-│   │   └── skins/tree.js # 생명력 → 나무 (사진 우선, SVG 폴백)
-│   └── assets/tree/      # stage-0.jpg ~ stage-4.jpg (극사실주의 사진 슬롯)
-└── extension/            # Pro 브라우저 확장
+├── index.html            # 스크린타임 키퍼 랜딩 + 체험 + 도감 (ko/en/zh)
+├── tree-art.js           # 나무 SVG 렌더 + 사진 폴백
+├── assets/
+│   ├── tree/             # stage-0~4.jpg (성장 시퀀스) + growth-strip.jpg
+│   └── trees/            # 도감 수종 + index.json
+├── extension/            # 스크린타임 게이트키퍼 (MV3)
+│   ├── manifest.json · gatekeeper.js · tree-art.js · popup.html · popup.js
+│   ├── assets/tree/      # 오버레이용 단계 사진(번들)
+│   └── index.html        # 설치 안내 페이지
+├── blog/                 # 정적 블로그 (index/post/app.js/blog.css)
+├── posts/                # 블로그 글(마크다운)
+├── tree/                 # 초기 말투-거울 토이 앱
+└── scripts/              # 이미지 생성 스크립트
 ```
 
-## 극사실주의 나무 사진 넣기
-`skins/tree.js` 는 `assets/tree/stage-N.jpg` 사진이 있으면 그걸 쓰고,
-없으면 SVG 나무로 폴백한다. 즉 **사진 5장을 넣으면 자동으로 실사 버전이 된다.**
+## 배포 (GitHub Pages)
+`main` 브랜치에 푸시하면 자동 배포된다. (Settings → Pages → Deploy from a branch · main · `/`)
 
-단계별 생성 프롬프트는 `assets/tree/PROMPTS.md` 참고. 같은 시드/구도로 건강 상태만 바꿔
-같은 나무가 변해 보이게 하는 게 핵심.
-
-| 파일 | 단계 | 상태 |
-|------|------|------|
-| stage-0.jpg | 고사목 | 잎 없이 말라 죽음 |
-| stage-1.jpg | 시듦 | 갈색 잎 몇 개, 듬성듬성 |
-| stage-2.jpg | 평범 | 보통의 초록 잎 |
-| stage-3.jpg | 건강 | 무성한 초록 |
-| stage-4.jpg | 만개 | 꽃 활짝, 햇살 |
-
-## 제품 구조 (무료 · 바이럴 · Pro)
-
-**무료 (이 웹앱)** — 진입 장벽 0, 외부 전송 0
-- 프롬프트 톤 → 나무 성장 (로컬 사전, 오프라인)
-- 스트릭(연속 사용일) · 뱃지(성취) → 습관화/재방문
-- 프라이버시: 모든 입력은 `localStorage` 에만 저장
-
-**바이럴 (백엔드 없이 가능한 것만 우선)**
-- **내 나무 공유 카드** (`src/share.js`): 현재 나무를 이미지(PNG)로 만들어 SNS에 자랑.
-  canvas로 전부 클라이언트에서 생성 → 서버 불필요, 프라이버시 유지.
-- 스트릭/뱃지가 공유 카드에 박혀 "자랑할 거리"를 만든다.
-- ⏸️ 리더보드 · 레퍼럴은 서버가 필요해 "외부 전송 없음" 원칙과 충돌 → 로드맵으로 보류.
-
-**Pro (브라우저 확장, `extension/`)** — 진짜 차별점
-- ChatGPT·Claude 웹 입력을 **실시간**으로 읽어 작업하는 내내 나무가 자란다.
-- 화면 구석 미니 나무 위젯 + 클릭 시 현황 팝업.
-- 분석은 여전히 기기 안에서만(네트워크 권한 없음).
-- 결제는 아직 미연동 — 웹앱 하단 **요금제 + 웨이트리스트**로 수요 검증부터.
-- 설치/동작은 [`extension/README.md`](extension/README.md) 참고.
-
-설정(핸들·도메인·웨이트리스트 URL·Pro 가격)은 `src/config.js` 한 곳에서 바꾼다.
-
-## 다음 단계 (아이디어)
-- 스킨 추가: 식물 / 물 결정 / 펫 (톤 엔진은 그대로, 그림만 교체)
-- 톤 판정 LLM 옵션 (정확도 ↑, API 필요)
-- 웹앱 ↔ 확장 상태 동기화, 주간 톤 리포트
-- 결제 연동(Gumroad/Lemon Squeezy 링크 → Stripe) — 웨이트리스트 수요 확인 후
+## 한계 — 모바일
+브라우저 확장은 **PC + 안드로이드 Firefox** 에서만 동작하고, 폰의 **앱**(유튜브·인스타 앱)은 막지 못한다.
+폰에서 앱까지 차단하려면 iOS Screen Time / Android Digital Wellbeing 기반 **네이티브 앱**이 필요하다(별도 작업).
