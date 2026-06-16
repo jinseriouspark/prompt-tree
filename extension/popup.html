@@ -4,43 +4,59 @@
     <meta charset="utf-8" />
     <style>
       body {
-        margin: 0;
-        width: 260px;
+        margin: 0; width: 280px;
         font: 14px/1.5 -apple-system, "Apple SD Gothic Neo", "Segoe UI", sans-serif;
-        color: #14130f;
-        background: #faf8f3;
-        padding: 16px;
+        color: #14130f; background: #faf8f3; padding: 16px;
       }
       h1 { font-size: 16px; margin: 0 0 2px; font-weight: 300; }
       h1 b { font-weight: 800; }
-      .sub { color: #6f6a60; font-size: 11px; margin: 0 0 12px; }
-      .emoji { font-size: 56px; text-align: center; margin: 4px 0; }
-      .name { font-weight: 800; text-align: center; }
-      .bar { height: 10px; background: #ece8dd; border-radius: 999px; overflow: hidden; margin: 10px 0 6px; }
-      .fill { height: 100%; border-radius: 999px; transition: width .5s; }
-      .stats { display: flex; justify-content: space-between; color: #6f6a60; font-size: 12px; }
-      button {
-        width: 100%; margin-top: 14px; padding: 8px;
-        border: 1px solid #e7e3d8; background: #fff; color: #6f6a60;
-        border-radius: 999px; cursor: pointer; font: inherit;
+      .sub { color: #6f6a60; font-size: 11px; margin: 0 0 14px; }
+      .row { display: flex; align-items: center; justify-content: space-between; margin: 10px 0; }
+      .row label { font-size: 13px; }
+      .num { display: flex; align-items: center; gap: 6px; }
+      .num input { width: 56px; padding: 5px 6px; border: 1px solid #e7e3d8; border-radius: 8px; font: inherit; text-align: right; }
+      .unit { color: #6f6a60; font-size: 12px; }
+      .switch { cursor: pointer; font-weight: 700; }
+      .switch.on { color: #2f8f3e; }
+      .switch.off { color: #b8b2a4; }
+      hr { border: none; border-top: 1px solid #ece8dd; margin: 12px 0; }
+      .sites { display: flex; flex-wrap: wrap; gap: 6px; }
+      .chip {
+        font-size: 12px; padding: 4px 9px; border-radius: 999px;
+        border: 1px solid #e7e3d8; background: #fff; color: #b8b2a4; cursor: pointer; user-select: none;
       }
-      button:hover { color: #14130f; }
-      .hint { margin: 12px 0 0; font-size: 11px; color: #b8b2a4; text-align: center; }
+      .chip.on { background: #eaf3e4; border-color: #b9d6a6; color: #2f6b34; font-weight: 700; }
+      .save { width: 100%; margin-top: 14px; padding: 9px; border: none; background: #3f8a35; color: #fff; border-radius: 999px; cursor: pointer; font: inherit; font-weight: 700; }
+      .save:hover { background: #357a2d; }
+      .saved { text-align: center; font-size: 12px; color: #2f8f3e; min-height: 16px; margin-top: 8px; }
+      .hint { margin: 10px 0 0; font-size: 11px; color: #b8b2a4; text-align: center; }
     </style>
   </head>
   <body>
-    <h1>프롬프트 <b>나무</b> Pro</h1>
-    <p class="sub">ChatGPT·Claude에서 자동으로 자랍니다</p>
-    <div class="emoji" id="emoji">🌿</div>
-    <div class="name" id="name">평범한 나무</div>
-    <div class="bar"><div class="fill" id="fill"></div></div>
-    <div class="stats">
-      <span>생명력 <b id="h">50</b>/100</span>
-      <span>🌱 <b id="p">0</b> · 🔥 <span id="s">0</span>일</span>
+    <h1>나무 <b>문지기</b></h1>
+    <p class="sub">시간을 넘기면 나무가 화면을 덮어 쉬게 해요</p>
+
+    <div class="row">
+      <label>작동</label>
+      <span class="switch on" id="enabled">켜짐</span>
     </div>
-    <button id="reset" type="button">정원 초기화</button>
-    <p class="hint">입력은 기기 안에서만 분석됩니다.</p>
-    <script src="engine.js"></script>
+    <div class="row">
+      <label>사용 한도</label>
+      <span class="num"><input id="usage" type="number" min="1" max="240" /><span class="unit">분</span></span>
+    </div>
+    <div class="row">
+      <label>휴식 시간</label>
+      <span class="num"><input id="break" type="number" min="1" max="60" /><span class="unit">분</span></span>
+    </div>
+
+    <hr />
+    <div class="sub" style="margin:0 0 8px">감시할 사이트</div>
+    <div class="sites" id="sites"></div>
+
+    <button class="save" id="save" type="button">저장</button>
+    <div class="saved" id="saved"></div>
+    <p class="hint">모든 기록은 이 브라우저 안에만 저장됩니다.</p>
+
     <script src="popup.js"></script>
   </body>
 </html>

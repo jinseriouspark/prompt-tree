@@ -1,21 +1,25 @@
 {
   "manifest_version": 3,
-  "name": "프롬프트 나무 Pro",
+  "name": "나무 문지기 (Tree Gatekeeper)",
   "version": "0.1.0",
-  "description": "ChatGPT·Claude에 보내는 프롬프트의 말투를 읽어, 코딩하는 내내 나무가 실시간으로 자랍니다. 입력은 기기 안에서만 분석됩니다.",
+  "description": "정한 시간을 넘기면 화면을 '자라는 나무'로 덮어, 정해진 만큼 쉬게 하는 스크린타임 문지기. 모든 기록은 기기 안에만 저장됩니다.",
   "permissions": ["storage"],
   "action": {
-    "default_title": "프롬프트 나무",
+    "default_title": "나무 문지기",
     "default_popup": "popup.html"
   },
   "content_scripts": [
     {
       "matches": [
-        "https://chatgpt.com/*",
-        "https://chat.openai.com/*",
-        "https://claude.ai/*"
+        "https://x.com/*",
+        "https://twitter.com/*",
+        "https://*.instagram.com/*",
+        "https://*.tiktok.com/*",
+        "https://*.youtube.com/*",
+        "https://*.facebook.com/*",
+        "https://*.reddit.com/*"
       ],
-      "js": ["engine.js", "content.js"],
+      "js": ["tree-art.js", "gatekeeper.js"],
       "run_at": "document_idle"
     }
   ]

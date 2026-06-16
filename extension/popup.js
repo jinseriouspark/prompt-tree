@@ -1,24 +1,70 @@
-// popup.js — 저장된 정원 상태를 보여준다. (stageFromHealth 는 engine.js 제공)
+// popup.js — 나무 문지기 설정 UI. 저장은 chrome.storage.local 한 곳.
 
-const KEY = "prompt-tree:ext";
-const STAGE_COLOR = ["#6b5b4a", "#b08b3e", "#6f9d5a", "#3f8a35", "#e0689f"];
+const CFG_KEY = "tree-gatekeeper:config";
+const DEFAULTS = {
+  enabled: true,
+  usageLimitMin: 20,
+  breakMin: 5,
+  sites: ["x.com", "twitter.com", "instagram.com", "tiktok.com", "youtube.com", "facebook.com", "reddit.com"],
+};
+// 화면에 고를 수 있는 사이트(= manifest content_scripts 와 일치)
+const ALL_SITES = [
+  ["x.com", "X"],
+  ["twitter.com", "Twitter"],
+  ["instagram.com", "Instagram"],
+  ["tiktok.com", "TikTok"],
+  ["youtube.com", "YouTube"],
+  ["facebook.com", "Facebook"],
+  ["reddit.com", "Reddit"],
+];
 
-function paint(state) {
-  const s = { health: 50, prompts: 0, streak: 0, ...(state || {}) };
-  const lv = levelInfo(s.health);
-  document.getElementById("emoji").textContent = lv.emoji;
-  document.getElementById("name").textContent = `Lv.${lv.level} · ${lv.name}`;
-  document.getElementById("h").textContent = lv.level;
-  document.getElementById("p").textContent = s.prompts;
-  document.getElementById("s").textContent = s.streak || 0;
-  const fill = document.getElementById("fill");
-  fill.style.width = s.health + "%";
-  fill.style.background = STAGE_COLOR[lv.id];
+let cfg = { ...DEFAULTS };
+
+const $ = (id) => document.getElementById(id);
+
+function renderSites() {
+  const box = $("sites");
+  box.innerHTML = "";
+  ALL_SITES.forEach(([host, label]) => {
+    const on = cfg.sites.includes(host);
+    const chip = document.createElement("span");
+    chip.className = "chip" + (on ? " on" : "");
+    chip.textContent = label;
+    chip.addEventListener("click", () => {
+      if (cfg.sites.includes(host)) cfg.sites = cfg.sites.filter((s) => s !== host);
+      else cfg.sites = [...cfg.sites, host];
+      renderSites();
+    });
+    box.appendChild(chip);
+  });
 }
 
-chrome.storage.local.get(KEY, (o) => paint(o && o[KEY]));
+function renderEnabled() {
+  const el = $("enabled");
+  el.textContent = cfg.enabled ? "켜짐" : "꺼짐";
+  el.className = "switch " + (cfg.enabled ? "on" : "off");
+}
 
-document.getElementById("reset").addEventListener("click", () => {
-  const fresh = { health: 50, prompts: 0, streak: 0 };
-  chrome.storage.local.set({ [KEY]: fresh }, () => paint(fresh));
+function paint() {
+  renderEnabled();
+  $("usage").value = cfg.usageLimitMin;
+  $("break").value = cfg.breakMin;
+  renderSites();
+}
+
+$("enabled").addEventListener("click", () => { cfg.enabled = !cfg.enabled; renderEnabled(); });
+
+$("save").addEventListener("click", () => {
+  cfg.usageLimitMin = Math.max(1, Math.min(240, parseInt($("usage").value, 10) || DEFAULTS.usageLimitMin));
+  cfg.breakMin = Math.max(1, Math.min(60, parseInt($("break").value, 10) || DEFAULTS.breakMin));
+  chrome.storage.local.set({ [CFG_KEY]: cfg }, () => {
+    const s = $("saved");
+    s.textContent = "저장됐어요 ✓ (해당 탭 새로고침하면 적용)";
+    setTimeout(() => (s.textContent = ""), 2500);
+  });
+});
+
+chrome.storage.local.get(CFG_KEY, (o) => {
+  if (o && o[CFG_KEY]) cfg = { ...DEFAULTS, ...o[CFG_KEY] };
+  paint();
 });

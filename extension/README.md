@@ -1,30 +1,37 @@
-# 프롬프트 나무 Pro (브라우저 확장)
+# 나무 문지기 (Tree Gatekeeper)
 
-ChatGPT·Claude 웹에서 **실제로 보내는 프롬프트**의 말투를 읽어, 코딩하는 내내
-화면 구석의 나무가 실시간으로 자라거나 시듭니다.
+[Cat Gatekeeper](https://zokuzoku.github.io/cat-gatekeeper/) 스타일의 스크린타임 문지기 — 고양이 대신 **나무**.
+지정한 사이트(X·Instagram·TikTok·YouTube·Facebook·Reddit)에 머문 시간을 재고,
+**사용 한도를 넘기면 화면 전체를 "자라는 나무" 오버레이로 덮어** 정해진 시간만큼 쉬게 한다.
 
-웹 토이(무료)와 달리 이쪽은 진짜 작업 흐름에 붙는 **Pro** 제품입니다.
-이게 "물은 답을 알고 있다" 컨셉을 토이가 아니라 습관 도구로 만드는, 방어적인 차별점입니다.
-
-## 프라이버시
-- 프롬프트는 **이 브라우저(기기) 안에서만** 분석됩니다. 외부로 전송하지 않습니다.
-- 상태는 `chrome.storage.local` 에만 저장됩니다.
-- 네트워크 권한 없음 — `permissions` 는 `storage` 하나뿐입니다.
-
-## 설치 (개발자 모드, 로드 언패키지)
-1. Chrome/Edge 에서 `chrome://extensions` 열기
-2. 우측 상단 **개발자 모드** 켜기
-3. **압축해제된 확장 프로그램을 로드** → 이 `extension/` 폴더 선택
-4. ChatGPT(`chatgpt.com`) 또는 Claude(`claude.ai`) 접속 → 우측 하단에 나무 위젯 등장
-5. 평소처럼 프롬프트를 보내면 말투에 따라 나무가 자랍니다. 확장 아이콘 클릭 시 현황 팝업.
+> 모든 시간 기록·설정은 `chrome.storage.local`(이 브라우저 안)에만 저장된다. 외부 전송 0.
 
 ## 동작
-- `engine.js` — 톤 사전 + 정원 로직 (웹앱 `src/toneEngine.js` / `garden.js` 와 동일 규칙)
-- `content.js` — 입력창 감지(엔터/보내기 버튼) → 톤 분석 → 나무 위젯 갱신
-- `popup.html` / `popup.js` — 현재 나무 상태 + 초기화
+1. 감시 대상 사이트를 보고 있는 동안 시간을 1초씩 누적한다(탭이 보이고 포커스 있을 때만).
+2. 누적이 **사용 한도(기본 20분)** 에 닿으면 화면을 나무 오버레이로 덮는다.
+3. **휴식 시간(기본 5분)** 동안 닫을 수 없고, 그 사이 묘목이 노송(老松)까지 자란다.
+4. 휴식이 끝나면 오버레이가 사라지고 사용 누적이 0으로 리셋된다.
+5. 날짜가 바뀌면 누적도 초기화된다.
 
-## 알려진 한계 / 다음 단계
-- 사이트 DOM 변경에 따라 입력 감지 셀렉터를 업데이트해야 할 수 있습니다
-  (`content.js` 의 `COMPOSER_SELECTORS` / `isSendButton`).
-- 아이콘 PNG는 아직 없습니다(스토어 등록 전 추가).
-- 로드맵: 추가 스킨(식물·물 결정·펫), 주간 톤 리포트, 웹앱과 상태 동기화.
+## 설치 (개발자 모드, 빌드 불필요)
+1. Chrome 주소창에 `chrome://extensions` → 우측 상단 **개발자 모드** 켜기
+2. **압축해제된 확장 프로그램을 로드** → 이 `extension/` 폴더 선택
+3. 툴바의 🌲 아이콘 클릭 → 사용 한도·휴식 시간·감시 사이트 설정 후 **저장**
+   - (설정을 바꾼 뒤에는 해당 사이트 탭을 새로고침하면 즉시 반영)
+
+Firefox 는 `about:debugging` → **이 Firefox** → **임시 부가 기능 로드** → `manifest.json` 선택.
+
+## 파일
+```
+extension/
+├── manifest.json   # MV3. 감시 사이트 매칭 + 팝업
+├── gatekeeper.js   # (콘텐츠) 시간 추적 + 차단 오버레이
+├── tree-art.js     # (콘텐츠) 휴식 진행도 → 소나무 SVG 장면
+├── popup.html      # 설정 UI
+└── popup.js        # 설정 저장 (storage.local)
+```
+
+## 커스터마이즈
+- 기본 한도/휴식/사이트: `gatekeeper.js` 와 `popup.js` 의 `DEFAULTS`.
+- 감시 사이트를 늘리려면 `manifest.json` 의 `content_scripts.matches` 와 `popup.js` 의 `ALL_SITES` 를 함께 추가.
+- 나무 그림: `tree-art.js` (웹앱 `tree/src/skins/tree.js` 와 동일한 소나무 렌더러).
