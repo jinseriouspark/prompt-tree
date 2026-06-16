@@ -3,6 +3,7 @@
 import { loadState, applyPrompt, resetState, settleIdle } from "./garden.js";
 import { stageFromHealth, svgForHealth, levelInfo } from "./skins/tree.js";
 import { BADGES, badgeById } from "./badges.js";
+import { toneReport } from "./report.js";
 import { buildShareCard, shareCard } from "./share.js";
 import { WAITLIST_URL, PRO_PRICE } from "./config.js";
 
@@ -25,6 +26,9 @@ const el = {
   toast: document.getElementById("toast"),
   log: document.getElementById("log"),
   reset: document.getElementById("reset"),
+  reportHeadline: document.getElementById("reportHeadline"),
+  reportBar: document.getElementById("reportBar"),
+  reportLegend: document.getElementById("reportLegend"),
   stageCard: document.getElementById("stageCard"),
   fx: document.getElementById("fx"),
   flash: document.getElementById("flash"),
@@ -64,7 +68,28 @@ function render() {
   el.streak.textContent = state.streak || 0;
   el.bestLevel.textContent = levelInfo(state.bestHealth ?? state.health).level;
   renderBadges();
+  renderReport();
   renderLog();
+}
+
+function renderReport() {
+  const r = toneReport(state.history);
+  el.reportHeadline.textContent = r.headline;
+  el.reportBar.innerHTML = r.total
+    ? r.segments
+        .filter((s) => s.pct > 0)
+        .map(
+          (s) =>
+            `<span class="report-seg" style="width:${s.pct}%;background:${s.color}" title="${s.label} ${Math.round(s.pct)}%"></span>`
+        )
+        .join("")
+    : `<span class="report-seg report-empty" style="width:100%"></span>`;
+  el.reportLegend.innerHTML = r.segments
+    .map(
+      (s) =>
+        `<li class="${s.count ? "" : "off"}"><i style="background:${s.color}"></i>${s.emoji} ${s.label} <b>${s.count}</b></li>`
+    )
+    .join("");
 }
 
 function renderBadges() {
