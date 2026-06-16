@@ -4,9 +4,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>진슬의 정원 🌲</title>
-    <meta name="description" content="소나무 한 그루부터 천천히 키우는 기록." />
-    <meta property="og:title" content="진슬의 정원 🌲" />
-    <meta property="og:description" content="소나무 한 그루부터 천천히 키우는 기록." />
     <link rel="stylesheet" href="blog.css" />
   </head>
   <body>
@@ -28,14 +25,18 @@
         </nav>
       </header>
 
-      <ul id="postList" class="post-list"></ul>
+      <article>
+        <a class="back" href="index.html">← 목록으로</a>
+        <h1 id="postTitle" class="post-title"></h1>
+        <div id="postHeadMeta" class="post-head-meta"></div>
+        <div id="postBody" class="post-body"></div>
+      </article>
 
       <footer class="site-foot">
-        <p>🌲 진슬의 정원 · prompt-tree 스타일로 만든 정적 블로그</p>
+        <p>🌲 진슬의 정원</p>
       </footer>
     </main>
     <script>
-      // 예전 PWA 서비스워커/캐시가 남아 옛 페이지를 보여주지 않도록 정리.
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker.getRegistrations().then((rs) => rs.forEach((r) => r.unregister()));
       }

@@ -1,12 +1,15 @@
 // main.js — 입력 → 톤 엔진 → 정원 상태 → 화면 렌더 를 잇는다.
 
-import { loadState, applyPrompt, resetState } from "./garden.js";
+import { loadState, applyPrompt, resetState, settleIdle } from "./garden.js";
 import { stageFromHealth, svgForHealth, levelInfo } from "./skins/tree.js";
 import { BADGES, badgeById } from "./badges.js";
+import { toneReport } from "./report.js";
 import { buildShareCard, shareCard } from "./share.js";
 import { WAITLIST_URL, PRO_PRICE } from "./config.js";
 
 let state = loadState();
+const idle = settleIdle(state); // 방치 동안 시들었으면 반영
+state = idle.state;
 
 const el = {
   stage: document.getElementById("stage"),
@@ -16,15 +19,20 @@ const el = {
   caption: document.getElementById("caption"),
   promptCount: document.getElementById("promptCount"),
   streak: document.getElementById("streak"),
+  bestLevel: document.getElementById("bestLevel"),
   badges: document.getElementById("badges"),
   input: document.getElementById("prompt"),
   send: document.getElementById("send"),
   toast: document.getElementById("toast"),
   log: document.getElementById("log"),
   reset: document.getElementById("reset"),
+  reportHeadline: document.getElementById("reportHeadline"),
+  reportBar: document.getElementById("reportBar"),
+  reportLegend: document.getElementById("reportLegend"),
   stageCard: document.getElementById("stageCard"),
   fx: document.getElementById("fx"),
   flash: document.getElementById("flash"),
+  examples: document.getElementById("examples"),
   share: document.getElementById("share"),
   proPrice: document.getElementById("proPrice"),
   waitlist: document.getElementById("waitlist"),
@@ -58,8 +66,30 @@ function render() {
   el.caption.textContent = stage.caption;
   el.promptCount.textContent = state.prompts;
   el.streak.textContent = state.streak || 0;
+  el.bestLevel.textContent = levelInfo(state.bestHealth ?? state.health).level;
   renderBadges();
+  renderReport();
   renderLog();
+}
+
+function renderReport() {
+  const r = toneReport(state.history);
+  el.reportHeadline.textContent = r.headline;
+  el.reportBar.innerHTML = r.total
+    ? r.segments
+        .filter((s) => s.pct > 0)
+        .map(
+          (s) =>
+            `<span class="report-seg" style="width:${s.pct}%;background:${s.color}" title="${s.label} ${Math.round(s.pct)}%"></span>`
+        )
+        .join("")
+    : `<span class="report-seg report-empty" style="width:100%"></span>`;
+  el.reportLegend.innerHTML = r.segments
+    .map(
+      (s) =>
+        `<li class="${s.count ? "" : "off"}"><i style="background:${s.color}"></i>${s.emoji} ${s.label} <b>${s.count}</b></li>`
+    )
+    .join("");
 }
 
 function renderBadges() {
@@ -87,12 +117,25 @@ function renderLog() {
     .join("");
 }
 
+// 토스트 큐 — 톤/레벨/뱃지 메시지가 겹치지 않게 차례로 보여준다.
 let toastTimer = null;
-function flash(html) {
-  el.toast.innerHTML = html;
+let toastQueue = [];
+let toastBusy = false;
+function pumpToast() {
+  if (toastBusy || !toastQueue.length) return;
+  toastBusy = true;
+  el.toast.innerHTML = toastQueue.shift();
   el.toast.classList.add("show");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.toast.classList.remove("show"), 2800);
+  toastTimer = setTimeout(() => {
+    el.toast.classList.remove("show");
+    toastBusy = false;
+    setTimeout(pumpToast, 260);
+  }, 2400);
+}
+function flash(html) {
+  toastQueue.push(html);
+  pumpToast();
 }
 
 function toneToast(tone, delta) {
@@ -144,15 +187,45 @@ function reactEffect(delta) {
 function submit() {
   const text = el.input.value.trim();
   if (!text) return;
+  const prevTier = levelInfo(state.health).name;
   const res = applyPrompt(state, text);
   state = res.state;
   el.input.value = "";
+
   flash(toneToast(res.tone, res.delta));
   reactEffect(res.delta);
   render();
-  // 새 뱃지가 있으면 톤 토스트 다음에 이어서 보여준다.
-  if (res.newBadges.length) {
-    setTimeout(() => flash(badgeToast(res.newBadges)), 2900);
+
+  // 단계 이름이 바뀌면 레벨업/하락 연출
+  const lv = levelInfo(state.health);
+  if (lv.name !== prevTier) {
+    const up = res.delta >= 0;
+    flash(
+      `${up ? "⬆️ <b>레벨 업!</b>" : "⬇️ <b>레벨 하락…</b>"}
+       <small>${lv.emoji} Lv.${lv.level} · ${lv.name}</small>`
+    );
+  }
+  // 새 뱃지
+  if (res.newBadges.length) flash(badgeToast(res.newBadges));
+
+  maybeProNudge();
+}
+
+// Pro 소프트 넛지 — 차단이 아니라 "진짜 코딩에도 나무를" 권유(한 번만).
+const NUDGE_KEY = "prompt-tree:proNudged";
+function maybeProNudge() {
+  if (state.prompts < 8) return;
+  try {
+    if (localStorage.getItem(NUDGE_KEY)) return;
+    localStorage.setItem(NUDGE_KEY, "1");
+  } catch { return; }
+  flash(`🌳 <b>이 습관, 진짜 코딩에도</b>
+    <small>Pro 확장이 ChatGPT·Claude에서 자동으로 나무를 키워요 ↓</small>`);
+  const pricing = document.getElementById("pricing");
+  if (pricing) {
+    pricing.classList.add("pulse");
+    setTimeout(() => pricing.classList.remove("pulse"), 2400);
+    setTimeout(() => pricing.scrollIntoView({ behavior: "smooth", block: "center" }), 600);
   }
 }
 
@@ -169,6 +242,14 @@ el.reset.addEventListener("click", () => {
     state = resetState();
     render();
   }
+});
+
+// 예시 칩: 눌러서 바로 보내기 (첫 사용자 체험)
+el.examples.addEventListener("click", (e) => {
+  const btn = e.target.closest(".chip");
+  if (!btn) return;
+  el.input.value = btn.dataset.text;
+  submit();
 });
 
 // --- 공유 카드 ------------------------------------------------------------
@@ -219,3 +300,30 @@ el.waitlist.addEventListener("submit", (e) => {
 });
 
 render();
+
+// --- PWA: 서비스워커 등록 (오프라인/설치) --------------------------------
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => { /* 무시 */ });
+  });
+}
+
+// --- 첫 방문 온보딩 ------------------------------------------------------
+const ONBOARD_KEY = "prompt-tree:onboarded";
+const onboard = document.getElementById("onboard");
+const onboardStart = document.getElementById("onboardStart");
+function closeOnboard() {
+  onboard.hidden = true;
+  try { localStorage.setItem(ONBOARD_KEY, "1"); } catch { /* 무시 */ }
+}
+try {
+  if (!localStorage.getItem(ONBOARD_KEY)) onboard.hidden = false;
+} catch { /* 무시 */ }
+onboardStart.addEventListener("click", closeOnboard);
+onboard.addEventListener("click", (e) => { if (e.target === onboard) closeOnboard(); });
+
+// 방치 동안 시들었으면 알려준다(돌아오게 만드는 장치).
+if (idle.decay > 0) {
+  flash(`🥀 <b>${idle.missedDays}일 만이네요</b>
+    <small>안 돌보는 사이 생명력 -${idle.decay} · 다정한 프롬프트로 살려주세요</small>`);
+}
