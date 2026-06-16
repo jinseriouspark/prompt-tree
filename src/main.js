@@ -1,12 +1,14 @@
 // main.js — 입력 → 톤 엔진 → 정원 상태 → 화면 렌더 를 잇는다.
 
-import { loadState, applyPrompt, resetState } from "./garden.js";
+import { loadState, applyPrompt, resetState, settleIdle } from "./garden.js";
 import { stageFromHealth, svgForHealth, levelInfo } from "./skins/tree.js";
 import { BADGES, badgeById } from "./badges.js";
 import { buildShareCard, shareCard } from "./share.js";
 import { WAITLIST_URL, PRO_PRICE } from "./config.js";
 
 let state = loadState();
+const idle = settleIdle(state); // 방치 동안 시들었으면 반영
+state = idle.state;
 
 const el = {
   stage: document.getElementById("stage"),
@@ -16,6 +18,7 @@ const el = {
   caption: document.getElementById("caption"),
   promptCount: document.getElementById("promptCount"),
   streak: document.getElementById("streak"),
+  bestLevel: document.getElementById("bestLevel"),
   badges: document.getElementById("badges"),
   input: document.getElementById("prompt"),
   send: document.getElementById("send"),
@@ -59,6 +62,7 @@ function render() {
   el.caption.textContent = stage.caption;
   el.promptCount.textContent = state.prompts;
   el.streak.textContent = state.streak || 0;
+  el.bestLevel.textContent = levelInfo(state.bestHealth ?? state.health).level;
   renderBadges();
   renderLog();
 }
@@ -251,3 +255,9 @@ el.waitlist.addEventListener("submit", (e) => {
 });
 
 render();
+
+// 방치 동안 시들었으면 알려준다(돌아오게 만드는 장치).
+if (idle.decay > 0) {
+  flash(`🥀 <b>${idle.missedDays}일 만이네요</b>
+    <small>안 돌보는 사이 생명력 -${idle.decay} · 다정한 프롬프트로 살려주세요</small>`);
+}

@@ -16,6 +16,7 @@ const DEFAULT_STATE = {
   history: [], // 최근 기록
   streak: 0, // 연속 사용 일수
   bestStreak: 0, // 최고 연속 기록
+  bestHealth: 50, // 개인 최고 생명력(=최고 Lv)
   lastDay: null, // 마지막으로 돌본 날 (YYYY-MM-DD)
   badges: [], // 획득한 뱃지 id 목록
   _wasDying: false, // 고사 직전(15 이하)을 겪었는지 (회생 뱃지용)
@@ -65,6 +66,24 @@ export function resetState() {
   return fresh;
 }
 
+// 방치하면 시든다("물은 답을 알고 있다" — 안 돌보면 마른다).
+// 마지막으로 돌본 날로부터 비운 날 하루당 생명력이 깎인다(하루는 봐줌, 바닥값 보장).
+const DECAY_PER_DAY = 4;
+const DECAY_FLOOR = 10; // 방치만으로는 완전히 고사하지 않는다(거친 말은 0까지 간다).
+
+export function settleIdle(state) {
+  if (!state.lastDay) return { state, decay: 0, missedDays: 0 };
+  const today = dayKey();
+  const missed = daysBetween(state.lastDay, today);
+  const decayDays = Math.max(0, missed - 1); // 하루 비운 건 봐준다
+  if (decayDays <= 0) return { state, decay: 0, missedDays: missed };
+  const lost = Math.min(Math.max(0, state.health - DECAY_FLOOR), decayDays * DECAY_PER_DAY);
+  if (lost <= 0) return { state, decay: 0, missedDays: missed };
+  const next = { ...state, health: state.health - lost };
+  saveState(next);
+  return { state: next, decay: lost, missedDays: missed };
+}
+
 // 오늘 기준 스트릭을 갱신한 값을 돌려준다(상태는 변경하지 않음).
 function nextStreak(state, today) {
   if (state.lastDay === today) return state.streak; // 같은 날 → 유지
@@ -101,6 +120,7 @@ export function applyPrompt(state, text) {
     prompts: state.prompts + 1,
     streak,
     bestStreak: Math.max(state.bestStreak || 0, streak),
+    bestHealth: Math.max(state.bestHealth || 0, health),
     lastDay: today,
     _wasDying: state._wasDying || health <= 15,
     history: [
