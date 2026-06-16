@@ -3,12 +3,8 @@
 > AI에게 던지는 프롬프트의 **말투(뉘앙스)** 에 따라 나무가 자라거나 시드는 실험.
 > 다정하면 무성하게, 거칠면 시들게. — 「물은 답을 알고 있다」에서 따온 모티프.
 
-바이브 코더를 위한 토이. "차단"하는 게이트키퍼가 아니라, **내가 한 말을 그대로 비추는 거울**이다.
+바이브 코더를 위한 토이. **내가 AI에게 한 말을 그대로 비추는 거울**이다.
 막 던진 프롬프트일수록 결과가 나쁜 게 현실이라, *예쁜 나무 = 좋은 프롬프트 습관* 이 된다.
-
-## 컨셉이 Cat Gatekeeper와 다른 점
-- Cat: 시간 초과 → **차단**(못 하게 막음)
-- 나무: 프롬프트 톤 → **성장/시듦**(결과로 보여줌) — 개입 방식이 정반대라 표절감이 없다.
 
 ## 어떻게 동작하나
 1. 프롬프트를 입력하고 보낸다.
@@ -28,22 +24,24 @@ python3 -m http.server 5173   # 또는 아무 정적 서버
 > `file://` 로 직접 열면 ES 모듈이 막히므로 반드시 정적 서버로 열 것.
 
 ## 배포 (GitHub Pages)
-`.github/workflows/pages.yml` 가 푸시 시 정적 사이트를 Pages 로 배포한다.
-**최초 1회만 수동**: 저장소 **Settings → Pages → Source = "GitHub Actions"** 로 변경.
-그 뒤로는 푸시하면 자동 배포된다(현재 작업 브랜치 + `main` 에서 트리거).
+`main` 브랜치에 푸시하면 GitHub Pages 가 자동 배포한다.
+- 블로그: https://jinseriouspark.github.io/prompt-tree/
+- 나무앱: https://jinseriouspark.github.io/prompt-tree/tree/
 
 ## 구조
 ```
 prompt-tree/
-├── index.html
-├── styles.css
-├── src/
-│   ├── toneEngine.js     # 말투 → 점수 (로컬, 무료)
-│   ├── garden.js         # 생명력 상태 + 저장
-│   ├── main.js           # 입력 ↔ 엔진 ↔ 화면
-│   └── skins/
-│       └── tree.js       # 생명력 → 나무 (사진 우선, SVG 폴백)
-└── assets/tree/          # stage-0.jpg ~ stage-4.jpg (극사실주의 사진 슬롯)
+├── index.html · post.html · app.js · blog.css   # 블로그 (루트)
+├── posts/                # 블로그 글 (마크다운) — 자세한 건 BLOG.md
+├── tree/                 # 나무앱
+│   ├── index.html · styles.css · sw.js
+│   ├── src/
+│   │   ├── toneEngine.js # 말투 → 점수 (로컬, 무료)
+│   │   ├── garden.js     # 생명력 상태 + 저장
+│   │   ├── main.js       # 입력 ↔ 엔진 ↔ 화면
+│   │   └── skins/tree.js # 생명력 → 나무 (사진 우선, SVG 폴백)
+│   └── assets/tree/      # stage-0.jpg ~ stage-4.jpg (극사실주의 사진 슬롯)
+└── extension/            # Pro 브라우저 확장
 ```
 
 ## 극사실주의 나무 사진 넣기
@@ -62,7 +60,6 @@ prompt-tree/
 | stage-4.jpg | 만개 | 꽃 활짝, 햇살 |
 
 ## 제품 구조 (무료 · 바이럴 · Pro)
-"Cat 공식"을 그대로 따른다. 차단(게이트키퍼)이 아니라 **거울**이라는 점에서 방어적·독창적이다.
 
 **무료 (이 웹앱)** — 진입 장벽 0, 외부 전송 0
 - 프롬프트 톤 → 나무 성장 (로컬 사전, 오프라인)
