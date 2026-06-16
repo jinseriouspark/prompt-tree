@@ -20,18 +20,18 @@ if (!KEY) {
 }
 
 const BASE =
-  "A single Korean red pine tree (소나무) standing alone on a small grassy mound, " +
-  "centered composition, eye-level wide shot, photorealistic nature photography, " +
-  "reddish-brown curved trunk, layered tiers of pine needles, soft depth of field, 8k, ultra sharp. " +
-  "Keep the SAME tree, SAME angle, SAME background — only health and weather change.";
+  "Photorealistic photograph of a Korean red pine (소나무) growing on the same small grassy mound, " +
+  "centered composition, eye-level wide shot, bright sunny day, blue sky with soft clouds, green grass, " +
+  "SAME location, SAME background, SAME camera and framing across every image. " +
+  "Only the tree's age and SIZE change — it grows bigger and taller step by step.";
 
-// 생성 순서: 기준(3) 먼저 → 그 이미지를 참조로 나머지.
+// 생성 순서: 기준(3) 먼저 → 그 이미지를 참조로 같은 자리/같은 빛에서 크기만 변화.
 const STAGES = [
-  [3, "thriving pine, full lush dense vivid green needles, warm sunny day, blue sky with soft clouds, bright green grass."],
-  [4, "majestic ancient pine (노송), enormous lush canopy with a few pine cones, radiant golden sunlight and sunbeams, magical warm glowing atmosphere, flowers in the grass."],
-  [2, "ordinary young pine, moderate plain green needles, developing form, healthy but unremarkable, soft neutral daylight, ordinary green grass."],
-  [1, "dying pine, sparse brown and yellow drooping needles, mostly bare, withered, dull cloudy sky, patchy yellowing grass."],
-  [0, "completely dead pine, bare gray skeletal branches, no needles, cracked peeling bark, gloomy overcast sky, dry dead grass, desaturated and bleak."],
+  [3, "a healthy young pine tree about 3 meters tall, a clearly formed trunk and full green layered needles."],
+  [4, "a huge majestic ancient pine (노송), very tall and wide, thick gnarled trunk and broad sprawling layered canopy, towering over the mound."],
+  [2, "a small young pine sapling about 1 meter tall, slender trunk, a few small tiers of green needles."],
+  [1, "a tiny pine seedling about 25cm tall, a thin stem with a small tuft of needles, just starting out."],
+  [0, "a very tiny pine sprout just emerging from the soil, only a few centimeters tall with two or three little needles."],
 ];
 
 const OUT_DIRS = ["assets/tree", "extension/assets/tree", "tree/assets/tree"].map((p) => join(ROOT, p));
