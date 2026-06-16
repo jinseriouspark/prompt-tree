@@ -12,12 +12,12 @@ const DEFAULTS = {
 };
 // 두 카테고리(= manifest content_scripts 와 일치). [host, 라벨]
 const CATEGORIES = [
-  { key: "ai", title: "💻 바이브코딩 (AI)", sites: [
+  { key: "ai", title: "바이브코딩 (AI)", sites: [
     ["chatgpt.com", "ChatGPT"], ["claude.ai", "Claude"],
     ["gemini.google.com", "Gemini"], ["perplexity.ai", "Perplexity"],
     ["chat.openai.com", "OpenAI"],
   ]},
-  { key: "sns", title: "📱 SNS", sites: [
+  { key: "sns", title: "소셜 미디어", sites: [
     ["youtube.com", "YouTube"], ["x.com", "X"], ["twitter.com", "Twitter"],
     ["instagram.com", "Instagram"], ["tiktok.com", "TikTok"], ["reddit.com", "Reddit"],
   ]},
