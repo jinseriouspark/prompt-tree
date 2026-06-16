@@ -11,7 +11,11 @@
     enabled: true,
     usageLimitMin: 20, // 이만큼 쓰면
     breakMin: 5,       // 이만큼 강제 휴식
-    sites: ["x.com", "twitter.com", "instagram.com", "tiktok.com", "youtube.com", "facebook.com", "reddit.com"],
+    // 감시 사이트(두 카테고리: 바이브코딩 AI + SNS). popup 에서 켜고 끈다.
+    sites: [
+      "chatgpt.com", "chat.openai.com", "claude.ai", "gemini.google.com", "perplexity.ai",
+      "x.com", "twitter.com", "instagram.com", "tiktok.com", "youtube.com", "reddit.com",
+    ],
   };
   const CFG_KEY = "tree-gatekeeper:config";
   const stateKey = (h) => `tree-gatekeeper:state:${h}`;

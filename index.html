@@ -3,44 +3,246 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>진슬의 정원 🌲</title>
-    <meta name="description" content="소나무 한 그루부터 천천히 키우는 기록." />
-    <meta property="og:title" content="진슬의 정원 🌲" />
-    <meta property="og:description" content="소나무 한 그루부터 천천히 키우는 기록." />
-    <link rel="stylesheet" href="blog.css" />
+    <title>나무 문지기 🌲 — 시간을 넘기면 나무가 쉬게 합니다</title>
+    <meta name="description" content="정한 시간을 넘기면 화면을 자라는 나무로 덮어 쉬게 하는 스크린타임 문지기. 바이브코딩(AI)과 SNS, 두 가지를 따로 지킵니다." />
+    <meta property="og:title" content="나무 문지기 🌲" />
+    <meta property="og:description" content="시간을 넘기면 나무가 화면을 덮어 쉬게 합니다. 바이브코딩(AI)·SNS 두 모드." />
+    <style>
+      :root{
+        --ink:#16201a; --soft:#5b6b56; --line:#dfe7d8;
+        --bg:#f3f7ef; --card:#ffffff; --green:#3f8a35; --green-d:#2f6b34;
+      }
+      *{ box-sizing:border-box; }
+      body{
+        margin:0; color:var(--ink); background:var(--bg);
+        font:16px/1.65 -apple-system,"Apple SD Gothic Neo","Segoe UI",sans-serif;
+      }
+      a{ color:var(--green-d); }
+      .wrap{ max-width:920px; margin:0 auto; padding:0 20px; }
+      header.nav{ position:sticky; top:0; z-index:10; background:#f3f7efe6; backdrop-filter:blur(8px);
+        border-bottom:1px solid var(--line); }
+      .nav .wrap{ display:flex; align-items:center; gap:18px; height:58px; }
+      .brand{ font-weight:800; font-size:17px; }
+      .nav nav{ margin-left:auto; display:flex; gap:18px; font-size:14px; }
+      .nav nav a{ color:var(--soft); text-decoration:none; }
+      .nav nav a:hover{ color:var(--ink); }
+
+      .hero{ text-align:center; padding:56px 0 30px; }
+      .hero h1{ font-size:40px; line-height:1.2; margin:0 0 12px; letter-spacing:-.5px; }
+      .hero p.lead{ font-size:18px; color:var(--soft); margin:0 auto 26px; max-width:560px; }
+      .scene{ width:min(78vw,360px); aspect-ratio:400/360; margin:6px auto 24px; border-radius:22px;
+        overflow:hidden; box-shadow:0 18px 50px #2c3a2426; background:#bcd6e6; }
+      .cta{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+      .btn{ border:none; cursor:pointer; font:inherit; font-weight:700; padding:13px 22px; border-radius:999px; }
+      .btn.primary{ background:var(--green); color:#fff; }
+      .btn.primary:hover{ background:var(--green-d); }
+      .btn.ghost{ background:#fff; color:var(--ink); border:1px solid var(--line); }
+
+      section{ padding:34px 0; }
+      h2{ font-size:24px; margin:0 0 6px; }
+      .muted{ color:var(--soft); }
+
+      .modes{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:18px; }
+      @media (max-width:640px){ .modes{ grid-template-columns:1fr; } .hero h1{ font-size:31px; } }
+      .mode{ background:var(--card); border:2px solid var(--line); border-radius:18px; padding:18px; cursor:pointer;
+        transition:border-color .15s, box-shadow .15s; }
+      .mode.on{ border-color:var(--green); box-shadow:0 8px 24px #3f8a3522; }
+      .mode .h{ display:flex; align-items:center; gap:10px; font-weight:800; font-size:17px; }
+      .mode .h .check{ margin-left:auto; width:22px; height:22px; border-radius:50%; border:2px solid var(--line);
+        display:grid; place-items:center; font-size:13px; color:#fff; }
+      .mode.on .h .check{ background:var(--green); border-color:var(--green); }
+      .mode p{ margin:8px 0 10px; color:var(--soft); font-size:14px; }
+      .sites{ display:flex; flex-wrap:wrap; gap:6px; }
+      .tag{ font-size:12px; padding:3px 9px; border-radius:999px; background:#eef4e8; color:var(--green-d); }
+
+      .controls{ display:flex; gap:18px; flex-wrap:wrap; align-items:center; margin-top:18px; }
+      .field{ display:flex; align-items:center; gap:8px; font-size:14px; }
+      .field input{ width:62px; padding:7px 8px; border:1px solid var(--line); border-radius:9px; font:inherit; text-align:right; }
+
+      .steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:16px; }
+      @media (max-width:640px){ .steps{ grid-template-columns:1fr; } }
+      .step{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; }
+      .step .n{ font-weight:800; color:var(--green); }
+      .install ol{ padding-left:20px; } .install li{ margin:7px 0; }
+      code{ background:#e9efe2; padding:1px 6px; border-radius:6px; font-size:13px; }
+      .privacy{ background:#eef4e8; border-radius:18px; padding:22px; }
+      footer{ border-top:1px solid var(--line); padding:26px 0 50px; color:var(--soft); font-size:14px; text-align:center; }
+      footer a{ margin:0 8px; }
+
+      /* --- 체험(차단) 오버레이 --- */
+      #demo{ position:fixed; inset:0; z-index:9999; display:none; flex-direction:column; align-items:center;
+        justify-content:center; gap:14px; text-align:center;
+        background:radial-gradient(120% 120% at 50% 0%,#eaf3e4 0%,#d8ead0 45%,#c7ddbd 100%); }
+      #demo.show{ display:flex; }
+      #demo .dscene{ width:min(80vw,400px); aspect-ratio:400/360; border-radius:20px; overflow:hidden;
+        box-shadow:0 18px 60px #2c3a2433; background:#bcd6e6; }
+      #demo .dtitle{ font-size:23px; font-weight:800; }
+      #demo .dsub{ color:#4b5a3f; font-size:14px; max-width:340px; }
+      #demo .dcount{ font-size:42px; font-weight:800; color:var(--green-d); font-variant-numeric:tabular-nums; }
+      #demo .dbar{ width:min(70vw,360px); height:10px; background:#ffffff80; border-radius:999px; overflow:hidden; }
+      #demo .dfill{ height:100%; width:0%; background:linear-gradient(90deg,#7fae5f,#3f8a35); transition:width 1s linear; }
+      #demo .dskip{ margin-top:6px; background:transparent; border:none; color:#7a8a6e; cursor:pointer; font:inherit; font-size:13px; text-decoration:underline; }
+    </style>
   </head>
   <body>
-    <main class="wrap">
-      <header class="site-head">
-        <svg class="site-mascot" viewBox="0 0 64 64" aria-hidden="true">
-          <rect x="29" y="40" width="6" height="18" rx="2" fill="#8a5630" />
-          <polygon points="32,8 46,30 18,30" fill="#356b34" />
-          <polygon points="32,18 50,44 14,44" fill="#3f8a35" />
-          <circle cx="44" cy="40" r="3.2" fill="#6e4a24" />
-        </svg>
-        <div>
-          <h1 class="site-title"><a href="index.html">진슬의 정원</a></h1>
-          <p class="site-tagline">소나무 한 그루부터 천천히 키우는 기록 🌲</p>
-        </div>
-        <nav class="site-nav">
-          <a href="index.html">글</a>
-          <a href="tree/">🌲 프롬프트나무</a>
+    <header class="nav">
+      <div class="wrap">
+        <span class="brand">🌲 나무 문지기</span>
+        <nav>
+          <a href="#modes">모드</a>
+          <a href="#how">작동방식</a>
+          <a href="#install">설치</a>
+          <a href="blog/">블로그</a>
         </nav>
-      </header>
+      </div>
+    </header>
 
-      <ul id="postList" class="post-list"></ul>
+    <main class="wrap">
+      <section class="hero">
+        <div class="scene" id="heroScene"></div>
+        <h1>시간을 넘기면,<br />나무가 화면을 덮어 쉬게 합니다</h1>
+        <p class="lead">
+          정한 시간을 넘기면 화면 전체가 <b>자라는 나무</b>로 잠깁니다.
+          쉬는 동안 묘목이 노송(老松)까지 자라요. 고양이 대신 나무로.
+        </p>
+        <div class="cta">
+          <button class="btn primary" id="tryBtn">🌲 차단 화면 체험하기</button>
+          <a class="btn ghost" href="#install">확장 설치하기</a>
+        </div>
+      </section>
 
-      <footer class="site-foot">
-        <p>🌲 진슬의 정원 · prompt-tree 스타일로 만든 정적 블로그</p>
-      </footer>
+      <section id="modes">
+        <h2>무엇을 지킬까요?</h2>
+        <p class="muted">두 가지를 <b>각각</b> 켤 수 있어요. 둘 다 골라도 됩니다.</p>
+        <div class="modes">
+          <div class="mode on" data-mode="ai">
+            <div class="h">💻 바이브코딩 휴식 <span class="check">✓</span></div>
+            <p>AI랑 너무 오래 붙어 있었다면, 잠깐 손을 떼고 머리를 식혀요.</p>
+            <div class="sites">
+              <span class="tag">ChatGPT</span><span class="tag">Claude</span>
+              <span class="tag">Gemini</span><span class="tag">Perplexity</span>
+            </div>
+          </div>
+          <div class="mode on" data-mode="sns">
+            <div class="h">📱 SNS 휴식 <span class="check">✓</span></div>
+            <p>무한 스크롤이 길어지면, 숲에서 한 박자 쉬어가요.</p>
+            <div class="sites">
+              <span class="tag">YouTube</span><span class="tag">X</span>
+              <span class="tag">Instagram</span><span class="tag">TikTok</span>
+              <span class="tag">Reddit</span>
+            </div>
+          </div>
+        </div>
+        <div class="controls">
+          <span class="field">사용 한도 <input id="usage" type="number" min="1" max="240" value="20" /> 분</span>
+          <span class="field">휴식 시간 <input id="brk" type="number" min="1" max="60" value="5" /> 분</span>
+          <span class="muted" style="font-size:13px">체험은 짧게 20초로 보여드려요.</span>
+        </div>
+      </section>
+
+      <section id="how">
+        <h2>이렇게 동작해요</h2>
+        <div class="steps">
+          <div class="step"><div class="n">1</div><b>시간을 잰다</b><p class="muted">고른 사이트를 보고 있는 동안만 시간이 쌓여요.</p></div>
+          <div class="step"><div class="n">2</div><b>한도를 넘기면 잠근다</b><p class="muted">사용 한도에 닿는 순간 화면을 나무로 덮어요.</p></div>
+          <div class="step"><div class="n">3</div><b>나무가 자라면 풀린다</b><p class="muted">휴식이 끝나면 묘목이 노송이 되고 화면이 열려요.</p></div>
+        </div>
+      </section>
+
+      <section id="install" class="install">
+        <h2>설치 (크롬, 1분)</h2>
+        <ol>
+          <li>주소창에 <code>chrome://extensions</code> 열고 우측 상단 <b>개발자 모드</b> 켜기</li>
+          <li><b>압축해제된 확장 프로그램을 로드</b> → 내려받은 <code>extension/</code> 폴더 선택
+            (<a href="https://github.com/jinseriouspark/prompt-tree" target="_blank" rel="noopener">GitHub에서 받기</a>)</li>
+          <li>툴바의 🌲 아이콘에서 <b>바이브코딩 / SNS</b>와 한도·휴식 시간을 설정하고 저장</li>
+        </ol>
+        <p class="muted">파이어폭스: <code>about:debugging</code> → 이 Firefox → 임시 부가 기능 로드 → <code>manifest.json</code>.</p>
+      </section>
+
+      <section>
+        <div class="privacy">
+          <h2 style="margin-top:0">🔒 기록은 전부 내 브라우저 안에만</h2>
+          <p class="muted" style="margin:0">사용 시간·설정은 <code>storage.local</code>에만 저장되고 어디로도 전송되지 않아요. 네트워크 권한도 없습니다.</p>
+        </div>
+      </section>
     </main>
+
+    <footer>
+      🌲 나무 문지기 · <a href="blog/">블로그</a> · <a href="tree/">프롬프트나무</a> ·
+      <a href="https://github.com/jinseriouspark/prompt-tree" target="_blank" rel="noopener">GitHub</a>
+    </footer>
+
+    <!-- 체험용 차단 오버레이 -->
+    <div id="demo">
+      <div class="dscene" id="dscene"></div>
+      <div class="dtitle">🌲 잠시 숲에서 쉬어가요</div>
+      <div class="dsub" id="dsub"></div>
+      <div class="dcount" id="dcount">00:20</div>
+      <div class="dbar"><div class="dfill" id="dfill"></div></div>
+      <button class="dskip" id="dskip">(체험이라 건너뛰기 — 실제 확장은 못 닫아요)</button>
+    </div>
+
     <script>
-      // 예전 PWA 서비스워커/캐시가 남아 옛 페이지를 보여주지 않도록 정리.
-      if ("serviceWorker" in navigator) {
+      // 예전 블로그 PWA 서비스워커/캐시 정리 (옛 화면 캐시 방지)
+      if ("serviceWorker" in navigator)
         navigator.serviceWorker.getRegistrations().then((rs) => rs.forEach((r) => r.unregister()));
-      }
       if (window.caches) caches.keys().then((ks) => ks.forEach((k) => caches.delete(k)));
     </script>
-    <script type="module" src="app.js"></script>
+    <script src="tree-art.js"></script>
+    <script>
+      // 히어로 나무
+      document.getElementById("heroScene").innerHTML = TreeArt.sceneSVG(72);
+
+      // 모드 선택 토글
+      const modes = { ai: true, sns: true };
+      document.querySelectorAll(".mode").forEach((el) => {
+        el.addEventListener("click", () => {
+          const m = el.dataset.mode;
+          modes[m] = !modes[m];
+          el.classList.toggle("on", modes[m]);
+        });
+      });
+
+      // 차단 화면 체험 (짧게 20초)
+      const demo = document.getElementById("demo");
+      const dscene = document.getElementById("dscene");
+      const dcount = document.getElementById("dcount");
+      const dfill = document.getElementById("dfill");
+      const dsub = document.getElementById("dsub");
+      const fmt = (s) => `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
+      let timer = null;
+
+      function startDemo() {
+        const picked = [];
+        if (modes.ai) picked.push("바이브코딩(AI)");
+        if (modes.sns) picked.push("SNS");
+        const label = picked.length ? picked.join(" · ") : "선택한 사이트";
+        const usage = document.getElementById("usage").value || 20;
+        dsub.textContent = `${label}에서 ${usage}분을 채운 상황이에요. 20초만 쉬면서 나무가 자라는 걸 지켜봐요.`;
+        const total = 20; let left = total;
+        demo.classList.add("show");
+        document.body.style.overflow = "hidden";
+        const render = () => {
+          const prog = (total - left) / total;
+          dscene.innerHTML = TreeArt.sceneSVG(prog * 100);
+          dcount.textContent = fmt(left);
+          dfill.style.width = (prog * 100).toFixed(1) + "%";
+        };
+        render();
+        clearInterval(timer);
+        timer = setInterval(() => {
+          left -= 1; render();
+          if (left <= 0) { clearInterval(timer); endDemo(); }
+        }, 1000);
+      }
+      function endDemo() {
+        clearInterval(timer);
+        demo.classList.remove("show");
+        document.body.style.overflow = "";
+      }
+      document.getElementById("tryBtn").addEventListener("click", startDemo);
+      document.getElementById("dskip").addEventListener("click", endDemo);
+    </script>
   </body>
 </html>

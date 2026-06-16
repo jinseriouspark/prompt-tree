@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "나무 문지기 (Tree Gatekeeper)",
-  "version": "0.1.0",
-  "description": "정한 시간을 넘기면 화면을 '자라는 나무'로 덮어, 정해진 만큼 쉬게 하는 스크린타임 문지기. 모든 기록은 기기 안에만 저장됩니다.",
+  "version": "0.2.0",
+  "description": "정한 시간을 넘기면 화면을 '자라는 나무'로 덮어 쉬게 하는 스크린타임 문지기. 바이브코딩(AI)·SNS 두 모드. 모든 기록은 기기 안에만 저장됩니다.",
   "permissions": ["storage"],
   "action": {
     "default_title": "나무 문지기",
@@ -11,12 +11,16 @@
   "content_scripts": [
     {
       "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://claude.ai/*",
+        "https://gemini.google.com/*",
+        "https://*.perplexity.ai/*",
         "https://x.com/*",
         "https://twitter.com/*",
         "https://*.instagram.com/*",
         "https://*.tiktok.com/*",
         "https://*.youtube.com/*",
-        "https://*.facebook.com/*",
         "https://*.reddit.com/*"
       ],
       "js": ["tree-art.js", "gatekeeper.js"],

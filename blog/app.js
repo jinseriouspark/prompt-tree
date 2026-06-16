@@ -123,7 +123,7 @@ async function renderPost(elTitle, elMeta, elBody) {
   elTitle.textContent = meta.title;
   elMeta.innerHTML = `${fmtDate(meta.date)} · ${(meta.tags || []).map((t) => `#${escapeHtml(t)}`).join(" ")}`;
   try {
-    const res = await fetch(`posts/${slug}.md`);
+    const res = await fetch(`../posts/${slug}.md`);
     if (!res.ok) throw new Error("not found");
     elBody.innerHTML = mdToHtml(await res.text());
   } catch {

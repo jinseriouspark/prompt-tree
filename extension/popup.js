@@ -5,37 +5,50 @@ const DEFAULTS = {
   enabled: true,
   usageLimitMin: 20,
   breakMin: 5,
-  sites: ["x.com", "twitter.com", "instagram.com", "tiktok.com", "youtube.com", "facebook.com", "reddit.com"],
+  sites: [
+    "chatgpt.com", "chat.openai.com", "claude.ai", "gemini.google.com", "perplexity.ai",
+    "x.com", "twitter.com", "instagram.com", "tiktok.com", "youtube.com", "reddit.com",
+  ],
 };
-// 화면에 고를 수 있는 사이트(= manifest content_scripts 와 일치)
-const ALL_SITES = [
-  ["x.com", "X"],
-  ["twitter.com", "Twitter"],
-  ["instagram.com", "Instagram"],
-  ["tiktok.com", "TikTok"],
-  ["youtube.com", "YouTube"],
-  ["facebook.com", "Facebook"],
-  ["reddit.com", "Reddit"],
+// 두 카테고리(= manifest content_scripts 와 일치). [host, 라벨]
+const CATEGORIES = [
+  { key: "ai", title: "💻 바이브코딩 (AI)", sites: [
+    ["chatgpt.com", "ChatGPT"], ["claude.ai", "Claude"],
+    ["gemini.google.com", "Gemini"], ["perplexity.ai", "Perplexity"],
+    ["chat.openai.com", "OpenAI"],
+  ]},
+  { key: "sns", title: "📱 SNS", sites: [
+    ["youtube.com", "YouTube"], ["x.com", "X"], ["twitter.com", "Twitter"],
+    ["instagram.com", "Instagram"], ["tiktok.com", "TikTok"], ["reddit.com", "Reddit"],
+  ]},
 ];
 
 let cfg = { ...DEFAULTS };
-
 const $ = (id) => document.getElementById(id);
 
 function renderSites() {
   const box = $("sites");
   box.innerHTML = "";
-  ALL_SITES.forEach(([host, label]) => {
-    const on = cfg.sites.includes(host);
-    const chip = document.createElement("span");
-    chip.className = "chip" + (on ? " on" : "");
-    chip.textContent = label;
-    chip.addEventListener("click", () => {
-      if (cfg.sites.includes(host)) cfg.sites = cfg.sites.filter((s) => s !== host);
-      else cfg.sites = [...cfg.sites, host];
-      renderSites();
+  CATEGORIES.forEach((cat) => {
+    const h = document.createElement("div");
+    h.className = "cat-title";
+    h.textContent = cat.title;
+    box.appendChild(h);
+    const row = document.createElement("div");
+    row.className = "chips";
+    cat.sites.forEach(([host, label]) => {
+      const on = cfg.sites.includes(host);
+      const chip = document.createElement("span");
+      chip.className = "chip" + (on ? " on" : "");
+      chip.textContent = label;
+      chip.addEventListener("click", () => {
+        if (cfg.sites.includes(host)) cfg.sites = cfg.sites.filter((s) => s !== host);
+        else cfg.sites = [...cfg.sites, host];
+        renderSites();
+      });
+      row.appendChild(chip);
     });
-    box.appendChild(chip);
+    box.appendChild(row);
   });
 }
 

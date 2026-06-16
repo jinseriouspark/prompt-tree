@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>진슬의 정원 🌲</title>
+    <meta name="description" content="소나무 한 그루부터 천천히 키우는 기록." />
+    <meta property="og:title" content="진슬의 정원 🌲" />
+    <meta property="og:description" content="소나무 한 그루부터 천천히 키우는 기록." />
+    <link rel="stylesheet" href="blog.css" />
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="site-head">
+        <svg class="site-mascot" viewBox="0 0 64 64" aria-hidden="true">
+          <rect x="29" y="40" width="6" height="18" rx="2" fill="#8a5630" />
+          <polygon points="32,8 46,30 18,30" fill="#356b34" />
+          <polygon points="32,18 50,44 14,44" fill="#3f8a35" />
+          <circle cx="44" cy="40" r="3.2" fill="#6e4a24" />
+        </svg>
+        <div>
+          <h1 class="site-title"><a href="index.html">진슬의 정원</a></h1>
+          <p class="site-tagline">소나무 한 그루부터 천천히 키우는 기록 🌲</p>
+        </div>
+        <nav class="site-nav">
+          <a href="index.html">글</a>
+          <a href="../">🌲 나무 문지기</a>
+          <a href="../tree/">프롬프트나무</a>
+        </nav>
+      </header>
+
+      <ul id="postList" class="post-list"></ul>
+
+      <footer class="site-foot">
+        <p>🌲 진슬의 정원 · prompt-tree 스타일로 만든 정적 블로그</p>
+      </footer>
+    </main>
+    <script>
+      // 예전 PWA 서비스워커/캐시가 남아 옛 페이지를 보여주지 않도록 정리.
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.getRegistrations().then((rs) => rs.forEach((r) => r.unregister()));
+      }
+      if (window.caches) caches.keys().then((ks) => ks.forEach((k) => caches.delete(k)));
+    </script>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
