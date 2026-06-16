@@ -36,6 +36,12 @@
         <p>🌲 진슬의 정원</p>
       </footer>
     </main>
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.getRegistrations().then((rs) => rs.forEach((r) => r.unregister()));
+      }
+      if (window.caches) caches.keys().then((ks) => ks.forEach((k) => caches.delete(k)));
+    </script>
     <script type="module" src="app.js"></script>
   </body>
 </html>

@@ -34,6 +34,13 @@
         <p>🌲 진슬의 정원 · prompt-tree 스타일로 만든 정적 블로그</p>
       </footer>
     </main>
+    <script>
+      // 예전 PWA 서비스워커/캐시가 남아 옛 페이지를 보여주지 않도록 정리.
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.getRegistrations().then((rs) => rs.forEach((r) => r.unregister()));
+      }
+      if (window.caches) caches.keys().then((ks) => ks.forEach((k) => caches.delete(k)));
+    </script>
     <script type="module" src="app.js"></script>
   </body>
 </html>
