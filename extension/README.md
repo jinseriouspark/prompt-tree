@@ -1,6 +1,6 @@
-# 나무 문지기 (Tree Gatekeeper)
+# 프롬프트트리 (Prompt Tree)
 
-[Cat Gatekeeper](https://zokuzoku.github.io/cat-gatekeeper/) 스타일의 스크린타임 문지기 — 고양이 대신 **나무**.
+[Cat Gatekeeper](https://zokuzoku.github.io/cat-gatekeeper/) 스타일의 스크린타임 휴식 도구 — 고양이 대신 **나무**.
 지정한 사이트(X·Instagram·TikTok·YouTube·Facebook·Reddit)에 머문 시간을 재고,
 **사용 한도를 넘기면 화면 전체를 "자라는 나무" 오버레이로 덮어** 정해진 시간만큼 쉬게 한다.
 

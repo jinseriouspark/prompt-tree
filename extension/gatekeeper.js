@@ -93,7 +93,7 @@
         <div class="sub" id="tg-sub"></div>
         <div class="count" id="tg-count">--:--</div>
         <div class="bar"><div class="fill" id="tg-fill"></div></div>
-        <div class="brand">나무 문지기 · Tree Gatekeeper</div>
+        <div class="brand">프롬프트트리 · Prompt Tree</div>
       </div>`;
     (document.documentElement).appendChild(host);
     document.documentElement.style.overflow = "hidden";

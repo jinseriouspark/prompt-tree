@@ -1,11 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "나무 문지기 (Tree Gatekeeper)",
+  "name": "프롬프트트리 (Prompt Tree)",
   "version": "0.2.0",
-  "description": "정한 시간을 넘기면 화면을 '자라는 나무'로 덮어 쉬게 하는 스크린타임 문지기. 바이브코딩(AI)·SNS 두 모드. 모든 기록은 기기 안에만 저장됩니다.",
+  "description": "정한 시간을 넘기면 화면을 '자라는 나무'로 덮어 쉬게 하는 스크린타임 휴식 도구. 바이브코딩(AI)·SNS 두 모드. 모든 기록은 기기 안에만 저장됩니다.",
   "permissions": ["storage"],
   "action": {
-    "default_title": "나무 문지기",
+    "default_title": "프롬프트트리",
     "default_popup": "popup.html"
   },
   "content_scripts": [
