@@ -8,6 +8,20 @@
       name="description"
       content="AI에게 보내는 프롬프트의 말투에 따라 나무가 자라거나 시드는 실험. 물은 답을 알고 있다."
     />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="프롬프트 나무 — 당신의 말이 자란다" />
+    <meta
+      property="og:description"
+      content="당신이 AI에게 한 말이 나무가 되어 자랍니다. 다정하면 만개하고, 거칠면 고사합니다."
+    />
+    <meta property="og:image" content="assets/og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="프롬프트 나무 — 당신의 말이 자란다" />
+    <meta
+      name="twitter:description"
+      content="당신이 AI에게 한 말이 나무가 되어 자랍니다. 다정하면 만개하고, 거칠면 고사합니다."
+    />
+    <meta name="twitter:image" content="assets/og.png" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -117,6 +131,20 @@
         <p>로컬에서만 동작 · 입력은 브라우저(localStorage)에만 저장되고 외부로 전송되지 않습니다.</p>
       </footer>
     </main>
+
+    <div id="onboard" class="modal" hidden>
+      <div class="modal-card">
+        <div class="modal-emoji">🌳</div>
+        <h2>당신의 말이 자랍니다</h2>
+        <p>AI에게 하듯 프롬프트를 보내면, 그 <b>말투</b>를 읽어 나무가 반응합니다.</p>
+        <div class="modal-extremes">
+          <div><span>🔥 거칠게</span><small>고사목으로 시듦</small></div>
+          <div><span>🌸 다정하게</span><small>만개로 무성</small></div>
+        </div>
+        <p class="modal-note">차단하지 않습니다. 당신의 말투를 그대로 비추는 <b>거울</b>입니다.<br/>입력은 이 브라우저에만 저장돼요.</p>
+        <button id="onboardStart" class="primary" type="button">시작하기 🌱</button>
+      </div>
+    </div>
 
     <script type="module" src="src/main.js"></script>
   </body>

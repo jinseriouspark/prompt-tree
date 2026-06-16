@@ -179,6 +179,47 @@ body {
 .badge.on { background: #fff; box-shadow: 0 1px 0 var(--line), 0 2px 8px #14130f12; }
 .badge.on:hover { transform: translateY(-2px); }
 
+/* 온보딩 모달 */
+.modal {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  background: rgba(20, 19, 15, 0.55);
+  backdrop-filter: blur(3px);
+  animation: fadeIn 0.25s ease;
+}
+.modal[hidden] { display: none; }
+.modal-card {
+  background: var(--card);
+  border-radius: 22px;
+  padding: 28px 24px;
+  max-width: 380px; width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px #14130f40;
+  animation: popIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.modal-emoji { font-size: 52px; }
+.modal-card h2 { margin: 6px 0 8px; font-size: 22px; font-weight: 800; }
+.modal-card > p { margin: 0 0 16px; font-size: 14px; color: var(--ink); }
+.modal-extremes { display: flex; gap: 10px; margin: 0 0 16px; }
+.modal-extremes div {
+  flex: 1; border: 1px solid var(--line); border-radius: 14px; padding: 12px 8px;
+}
+.modal-extremes span { display: block; font-weight: 800; font-size: 14px; }
+.modal-extremes small { display: block; color: var(--muted); font-size: 12px; margin-top: 3px; }
+.modal-note { font-size: 12.5px; color: var(--muted); margin: 0 0 18px; line-height: 1.5; }
+.modal-note b { color: var(--ink); }
+.modal-card .primary { width: 100%; padding: 12px; font-size: 15px; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { from { opacity: 0; transform: translateY(14px) scale(0.96); } to { opacity: 1; transform: none; } }
+
+/* Pro 넛지 펄스 */
+.pulse { animation: pulse 0.8s ease 3; }
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.012); }
+}
+
 /* 어떻게 동작하나 */
 .how { margin-top: 30px; }
 .how h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 10px; }

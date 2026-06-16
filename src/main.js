@@ -182,6 +182,26 @@ function submit() {
   }
   // 새 뱃지
   if (res.newBadges.length) flash(badgeToast(res.newBadges));
+
+  maybeProNudge();
+}
+
+// Pro 소프트 넛지 — 차단이 아니라 "진짜 코딩에도 나무를" 권유(한 번만).
+const NUDGE_KEY = "prompt-tree:proNudged";
+function maybeProNudge() {
+  if (state.prompts < 8) return;
+  try {
+    if (localStorage.getItem(NUDGE_KEY)) return;
+    localStorage.setItem(NUDGE_KEY, "1");
+  } catch { return; }
+  flash(`🌳 <b>이 습관, 진짜 코딩에도</b>
+    <small>Pro 확장이 ChatGPT·Claude에서 자동으로 나무를 키워요 ↓</small>`);
+  const pricing = document.getElementById("pricing");
+  if (pricing) {
+    pricing.classList.add("pulse");
+    setTimeout(() => pricing.classList.remove("pulse"), 2400);
+    setTimeout(() => pricing.scrollIntoView({ behavior: "smooth", block: "center" }), 600);
+  }
 }
 
 el.send.addEventListener("click", submit);
@@ -255,6 +275,20 @@ el.waitlist.addEventListener("submit", (e) => {
 });
 
 render();
+
+// --- 첫 방문 온보딩 ------------------------------------------------------
+const ONBOARD_KEY = "prompt-tree:onboarded";
+const onboard = document.getElementById("onboard");
+const onboardStart = document.getElementById("onboardStart");
+function closeOnboard() {
+  onboard.hidden = true;
+  try { localStorage.setItem(ONBOARD_KEY, "1"); } catch { /* 무시 */ }
+}
+try {
+  if (!localStorage.getItem(ONBOARD_KEY)) onboard.hidden = false;
+} catch { /* 무시 */ }
+onboardStart.addEventListener("click", closeOnboard);
+onboard.addEventListener("click", (e) => { if (e.target === onboard) closeOnboard(); });
 
 // 방치 동안 시들었으면 알려준다(돌아오게 만드는 장치).
 if (idle.decay > 0) {
