@@ -135,15 +135,17 @@
     // photoBase 미지정 시 SVG 만. (예: "assets/tree" 또는 chrome.runtime.getURL("assets/tree"))
     paint(el, health, photoBase) {
       if (!el) return;
-      el.innerHTML = this.sceneSVG(health);
-      if (!photoBase) return;
+      // photoBase 없으면 SVG. 있으면 사진을 불러와 교체하고, 로딩 중엔 이전 프레임 유지(SVG 깜빡임 없음).
+      if (!photoBase) { el.innerHTML = this.sceneSVG(health); return; }
       const url = `${photoBase}/stage-${this.stageIndex(health)}.jpg`;
       const img = new Image();
       img.onload = () => {
         el.innerHTML =
           `<img src="${url}" alt="" style="width:100%;height:100%;object-fit:cover;display:block"/>`;
       };
-      img.src = url; // 없으면 onerror 로 무시 → SVG 유지
+      // 사진이 정말 없을 때만 SVG 폴백 (이미 사진이 떠 있으면 유지)
+      img.onerror = () => { if (!el.querySelector("img")) el.innerHTML = this.sceneSVG(health); };
+      img.src = url;
     },
   };
 })(window);
