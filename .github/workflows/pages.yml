@@ -31,6 +31,9 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
+        with:
+          # 공개 전환 직후 Pages 가 꺼져 있어도 워크플로가 자동으로 켠다.
+          enablement: true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
