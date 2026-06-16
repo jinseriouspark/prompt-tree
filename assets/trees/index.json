@@ -1,0 +1,184 @@
+[
+  {
+    "slug": "maple-autumn",
+    "ko": "단풍나무",
+    "en": "Maple",
+    "zh": "枫树",
+    "habitat": "forest"
+  },
+  {
+    "slug": "white-birch",
+    "ko": "자작나무",
+    "en": "White birch",
+    "zh": "白桦",
+    "habitat": "forest"
+  },
+  {
+    "slug": "redwood",
+    "ko": "세쿼이아",
+    "en": "Redwood",
+    "zh": "红杉",
+    "habitat": "forest"
+  },
+  {
+    "slug": "bamboo",
+    "ko": "대나무",
+    "en": "Bamboo",
+    "zh": "竹",
+    "habitat": "forest"
+  },
+  {
+    "slug": "cherry-blossom",
+    "ko": "벚나무",
+    "en": "Cherry blossom",
+    "zh": "樱花树",
+    "habitat": "grassland"
+  },
+  {
+    "slug": "baobab",
+    "ko": "바오바브나무",
+    "en": "Baobab",
+    "zh": "猴面包树",
+    "habitat": "grassland"
+  },
+  {
+    "slug": "umbrella-acacia",
+    "ko": "우산아카시아",
+    "en": "Umbrella acacia",
+    "zh": "伞形金合欢",
+    "habitat": "grassland"
+  },
+  {
+    "slug": "lone-oak",
+    "ko": "들판의 참나무",
+    "en": "Lone oak",
+    "zh": "孤橡树",
+    "habitat": "grassland"
+  },
+  {
+    "slug": "joshua-tree",
+    "ko": "조슈아트리",
+    "en": "Joshua tree",
+    "zh": "约书亚树",
+    "habitat": "desert"
+  },
+  {
+    "slug": "saguaro",
+    "ko": "사구아로 선인장",
+    "en": "Saguaro cactus",
+    "zh": "巨人柱仙人掌",
+    "habitat": "desert"
+  },
+  {
+    "slug": "date-palm",
+    "ko": "대추야자",
+    "en": "Date palm",
+    "zh": "枣椰树",
+    "habitat": "desert"
+  },
+  {
+    "slug": "dragon-blood",
+    "ko": "용혈수",
+    "en": "Dragon blood tree",
+    "zh": "龙血树",
+    "habitat": "desert"
+  },
+  {
+    "slug": "kapok",
+    "ko": "케이폭나무",
+    "en": "Kapok",
+    "zh": "木棉",
+    "habitat": "jungle"
+  },
+  {
+    "slug": "banyan",
+    "ko": "반얀나무",
+    "en": "Banyan",
+    "zh": "榕树",
+    "habitat": "jungle"
+  },
+  {
+    "slug": "strangler-fig",
+    "ko": "교살무화과",
+    "en": "Strangler fig",
+    "zh": "绞杀榕",
+    "habitat": "jungle"
+  },
+  {
+    "slug": "rubber-fig",
+    "ko": "고무나무",
+    "en": "Rubber fig",
+    "zh": "橡胶榕",
+    "habitat": "jungle"
+  },
+  {
+    "slug": "weeping-willow",
+    "ko": "수양버들",
+    "en": "Weeping willow",
+    "zh": "垂柳",
+    "habitat": "wetland"
+  },
+  {
+    "slug": "mangrove",
+    "ko": "맹그로브",
+    "en": "Mangrove",
+    "zh": "红树林",
+    "habitat": "wetland"
+  },
+  {
+    "slug": "palm",
+    "ko": "야자수",
+    "en": "Palm",
+    "zh": "棕榈树",
+    "habitat": "coast"
+  },
+  {
+    "slug": "olive",
+    "ko": "올리브나무",
+    "en": "Olive",
+    "zh": "橄榄树",
+    "habitat": "mountain"
+  },
+  {
+    "slug": "snowy-pine",
+    "ko": "설송",
+    "en": "Snowy pine",
+    "zh": "雪松",
+    "habitat": "mountain"
+  },
+  {
+    "slug": "ginkgo",
+    "ko": "은행나무",
+    "en": "Ginkgo",
+    "zh": "银杏树",
+    "habitat": "garden"
+  },
+  {
+    "slug": "magnolia",
+    "ko": "목련",
+    "en": "Magnolia",
+    "zh": "玉兰",
+    "habitat": "garden"
+  },
+  {
+    "slug": "jacaranda",
+    "ko": "자카란다",
+    "en": "Jacaranda",
+    "zh": "蓝花楹",
+    "habitat": "garden"
+  },
+  {
+    "slug": "bonsai",
+    "ko": "분재",
+    "en": "Bonsai",
+    "zh": "盆栽",
+    "habitat": "garden"
+  },
+  {
+    "slug": "sakura-night",
+    "ko": "밤 벚꽃",
+    "en": "Night sakura",
+    "zh": "夜樱",
+    "habitat": "garden"
+  }
+]
