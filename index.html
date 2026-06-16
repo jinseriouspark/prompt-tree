@@ -282,7 +282,7 @@
       applyLang(LANG);
 
       // --- 나무 + 모드 + 체험 ---
-      TreeArt.paint(document.getElementById("heroScene"), 82, "assets/tree");
+      TreeArt.paint(document.getElementById("heroScene"), 96, "assets/tree");
       const modes = { ai: true, sns: true };
       document.querySelectorAll(".mode").forEach((el) => {
         el.addEventListener("click", () => { const m = el.dataset.mode; modes[m] = !modes[m]; el.classList.toggle("on", modes[m]); });
